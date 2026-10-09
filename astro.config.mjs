@@ -6,7 +6,7 @@ export default defineConfig({
   site: "https://carmeetsv.sistemaues.me/",
   vite: {
     build: {
-      cssMinify: false,
+      cssMinify: "esbuild",
     },
   },
 });
