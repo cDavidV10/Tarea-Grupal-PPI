@@ -180,20 +180,20 @@ const enlaces = [
         }
     }
 
-    @supports (animation-timeline: scroll()) {
-        .navbar {
-            animation: adjust-navbar auto linear both;
-            animation-timeline: scroll(root);
-            animation-range: 0 100px;
-        }
-    }
-
-    @keyframes adjust-navbar {
+    @keyframes -global-adjust-navbar {
         to {
             font-size: 0.9rem;
             background-color: rgb(33 23 24 / 0.85);
             backdrop-filter: blur(5px);
             box-shadow: 0 10px 30px rgb(0 0 0 / 0.5);
+        }
+    }
+
+     @supports (animation-timeline: scroll()) {
+        .navbar {
+            animation: -global-adjust-navbar auto linear both;
+            animation-timeline: scroll(root);
+            animation-range: 0 100px;
         }
     }
 
