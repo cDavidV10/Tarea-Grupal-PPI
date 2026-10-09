@@ -1,0 +1,43 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --kala-black: #211718;
+  --cape-storm: #3c4755;
+  --space-convoy: #637687;
+  --all-systems-red: #b00303;
+  --vintage-charm: #c5b1a6;
+
+  /* Kālā Black */
+  --kala-black-50: #908b8c;
+  --kala-black-75: #c8c5c5;
+  --kala-black-90: #e9e8e8;
+
+  /* Cape Storm */
+  --cape-storm-50: #9ea3aa;
+  --cape-storm-75: #ced1d5;
+  --cape-storm-90: #ecedee;
+
+  /* Space Convoy */
+  --space-convoy-50: #b1bbc3;
+  --space-convoy-75: #d8dde1;
+  --space-convoy-90: #eff1f3;
+
+  /* All Systems Red */
+  --all-systems-red-50: #d88181;
+  --all-systems-red-75: #ebc0c0;
+  --all-systems-red-90: #f7e6e6;
+
+  /* Vintage Charm */
+  --vintage-charm-50: #e2d8d3;
+  --vintage-charm-75: #f1ece9;
+  --vintage-charm-90: #f9f7f6;
+}
+body {
+  background-color: var(--kala-black);
+}

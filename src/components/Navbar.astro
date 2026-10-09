@@ -1,0 +1,254 @@
+---
+const enlaces = [
+    { href: "#inicio", texto: "Inicio" },
+    { href: "#eventos", texto: "Eventos" },
+    { href: "#pistas", texto: "Pistas" },
+];
+---
+
+<header class="navbar" data-navbar>
+    <nav class="navbar-barra" aria-label="Principal">
+        <a href="#inicio" class="navbar-logo">Logo</a>
+
+        <button
+            class="navbar-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="navbar-menu"
+            aria-label="Abrir menú"
+        >
+            <span></span><span></span><span></span>
+        </button>
+
+        <ul id="navbar-menu" class="navbar-items">
+            {enlaces.map(({ href, texto }) => (
+                <li><a href={href}>{texto}</a></li>
+            ))}
+        </ul>
+    </nav>
+</header>
+
+<style>
+    :global(html) {
+        scroll-padding-top: 5rem;
+    }
+
+    .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: var(--kala-black);
+        border-bottom: 1px solid var(--space-convoy);
+        color: var(--vintage-charm);
+        font-size: 0.95rem;
+        height: 8vh;
+    }
+
+    .navbar:has(.navbar-toggle[aria-expanded="true"]) {
+        border-bottom-color: transparent;
+    }
+
+    .navbar-barra {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 4rem;
+        max-width: 72rem;
+        margin-inline: auto;
+        padding: 0 1.5rem;
+    }
+
+    .navbar-logo {
+        color: inherit;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .navbar-toggle {
+        display: grid;
+        place-content: center;
+        gap: 5px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .navbar-toggle span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: currentColor;
+        border-radius: 2px;
+        transition: transform 0.25s ease, opacity 0.2s ease;
+    }
+
+    .navbar-toggle[aria-expanded="true"] span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+    .navbar-toggle[aria-expanded="true"] span:nth-child(2) {
+        opacity: 0;
+    }
+    .navbar-toggle[aria-expanded="true"] span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .navbar-items {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 0.75rem 1.5rem 1rem;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        background-color: rgb(33 23 24 / 0.98);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid #637687;
+        box-shadow: 0 12px 24px rgb(0 0 0 / 0.35);
+
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease,
+            visibility 0s linear 0.25s;
+        li {
+            &:hover{
+                color: red;
+            }
+        }
+    }
+
+    .navbar-toggle[aria-expanded="true"] ~ .navbar-items {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        pointer-events: auto;
+        transition-delay: 0s;
+    }
+
+    .navbar-items a {
+        display: block;
+        padding: 0.9rem 0 0.9rem 1rem;
+        border-left: 2px solid transparent;
+        color: inherit;
+        text-decoration: none;
+        font-size: 1.1rem;
+    }
+
+    .navbar-items a[aria-current="location"] {
+        border-left-color: #b00303;
+        color: var(--vintage-charm-90, #f9f7f6);
+    }
+
+    @media (min-width: 768px) {
+        .navbar-toggle {
+            display: none;
+        }
+
+        .navbar-items {
+            border: solid 10px #fff;
+            position: relative;
+            flex-direction: row;
+            gap: 3rem;
+            padding: 0;
+            background: none;
+            backdrop-filter: none;
+            border: 0;
+            box-shadow: none;
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            pointer-events: auto;
+        }
+
+        .navbar-items a {
+            padding: 0.25rem 0;
+            border-left: 0;
+            border-bottom: 2px solid transparent;
+            font-size: inherit;
+        }
+
+        .navbar-items a[aria-current="location"] {
+            border-bottom-color: #b00303;
+        }
+    }
+
+    @supports (animation-timeline: scroll()) {
+        .navbar {
+            animation: adjust-navbar auto linear both;
+            animation-timeline: scroll(root);
+            animation-range: 0 100px;
+        }
+    }
+
+    @keyframes adjust-navbar {
+        to {
+            font-size: 0.9rem;
+            background-color: rgb(33 23 24 / 0.85);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 10px 30px rgb(0 0 0 / 0.5);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .navbar-toggle span,
+        .navbar-items {
+            transition: none;
+        }
+    }
+</style>
+
+<script>
+    const $header = document.querySelector<HTMLElement>("[data-navbar]");
+    const $boton = $header?.querySelector<HTMLButtonElement>(".navbar-toggle");
+    const $enlaces = $header?.querySelectorAll<HTMLAnchorElement>(".navbar-items a");
+
+    if ($header && $boton && $enlaces) {
+        const alternar = (abrir: boolean) => {
+            $boton.setAttribute("aria-expanded", String(abrir));
+            $boton.setAttribute("aria-label", abrir ? "Cerrar menú" : "Abrir menú");
+        };
+
+        $boton.addEventListener("click", () =>
+            alternar($boton.getAttribute("aria-expanded") !== "true"),
+        );
+        $enlaces.forEach((a) => a.addEventListener("click", () => alternar(false)));
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") alternar(false);
+        });
+        document.addEventListener("click", (e) => {
+            if (!$header.contains(e.target as Node)) alternar(false);
+        });
+        matchMedia("(min-width: 768px)").addEventListener("change", (e) => {
+            if (e.matches) alternar(false);
+        });
+
+        const secciones = [...$enlaces]
+            .map((a) => (a.hash ? document.querySelector(a.hash) : null))
+            .filter((s): s is Element => s !== null);
+
+        const observador = new IntersectionObserver(
+            (entradas) => {
+                entradas.forEach((entrada) => {
+                    if (!entrada.isIntersecting) return;
+                    $enlaces.forEach((a) => {
+                        if (a.hash === `#${entrada.target.id}`) {
+                            a.setAttribute("aria-current", "location");
+                        } else {
+                            a.removeAttribute("aria-current");
+                        }
+                    });
+                });
+            },
+            { rootMargin: "-40% 0px -55% 0px" },
+        );
+        secciones.forEach((s) => observador.observe(s));
+    }
+</script>
