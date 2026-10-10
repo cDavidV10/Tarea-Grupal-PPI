@@ -1,70 +1,77 @@
 ---
-import  Navbar  from '../components/Navbar.astro';
-import "../../public/styles/global.css"
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import "../../public/styles/global.css";
 
 interface Props {
-	title: string,
-	description: string,
-	image?: string;
+    title: string;
+    description: string;
+    image?: string;
 }
 
-const {title, description, image} = Astro.props
+const { title, description, image } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
+const canonicalURL = Astro.site
+    ? new URL(Astro.url.pathname, Astro.site)
+    : undefined;
+const imagenURL = image ? new URL(image, Astro.url) : undefined;
+const tieneHero = Astro.slots.has("hero");
 ---
 
-
+<!doctype html>
 <html lang="es">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="generator" content={Astro.generator} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+        />
 
-		<!-- meta informacion para indexar la pagina -->
-		<meta
-		name="google-site-verification"
-		content="eJAMsc3WCL8ZZO832eySoN9beijMxur3LRQV3lCjq_k"
-		/>
+        <meta
+            name="google-site-verification"
+            content="eJAMsc3WCL8ZZO832eySoN9beijMxur3LRQV3lCjq_k"
+        />
 
-		<!-- url canonica -->
-		<link rel="canonical" href={canonicalURL} />
+        {canonicalURL && <link rel="canonical" href={canonicalURL} />}
 
-		<!-- Global metada -->
-		<title>{title}</title>
-		<meta name="title" content={title}>
-		<meta name="description" content={description} />
+        <title>{title}</title>
+        <meta name="title" content={title} />
+        <meta name="description" content={description} />
 
-		<!-- Open Graph / Facebook -->
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={Astro.url} />
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content={description} />
-		<!-- <meta property="og:image" content={new URL(image, Astro.url)} /> -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={Astro.url.href} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        {imagenURL && <meta property="og:image" content={imagenURL} />}
 
-		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content={Astro.url} />
-		<meta property="twitter:title" content={title} />
-		<meta property="twitter:description" content={description} />
-		<!-- <meta property="twitter:image" content={new URL(image, Astro.url)} /> -->
-	</head>
-	<body>
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content={Astro.url.href} />
+        <meta property="twitter:title" content={title} />
+        <meta property="twitter:description" content={description} />
+        {imagenURL && <meta property="twitter:image" content={imagenURL} />}
+    </head>
+    <body>
         <Navbar />
-		<main>
-			<slot name="hero" />
-			<slot />
-		</main>
-	</body>
+        <main class:list={["principal", { "sin-hero": !tieneHero }]}>
+            <slot name="hero" />
+            <slot />
+        </main>
+        <Footer />
+    </body>
 </html>
 
 <style>
-	main{
-		height: 92vh;
-	}
+    .principal {
+        flex: 1;
+    }
+
+    .principal.sin-hero {
+        padding-top: calc(4rem + 1px);
+    }
 </style>

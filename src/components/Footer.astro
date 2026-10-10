@@ -1,0 +1,152 @@
+---
+const anio = new Date().getFullYear();
+
+const redes = [
+    {
+        nombre: "Facebook",
+        href: "#",
+        trazos: ["M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"],
+    },
+    {
+        nombre: "Instagram",
+        href: "#",
+        trazos: [
+            "M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4l0 -10",
+            "M8.5 12a3.5 3.5 0 1 0 7 0a3.5 3.5 0 0 0 -7 0",
+            "M17 7v.01",
+        ],
+    },
+    {
+        nombre: "X",
+        href: "#",
+        trazos: [
+            "M4 4l11.733 16h4.267l-11.733 -16l-4.267 0",
+            "M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772",
+        ],
+    }
+];
+---
+
+<footer class="footer">
+    <section class="footer-contenido">
+        <article class="izquierda">
+            <span class="copy">© {anio} Car Meet SV</span>
+            <span class="lema">Donde se vive la cultura del motor</span>
+        </article>
+
+        <ul class="redes" aria-label="Redes sociales">
+            {redes.map(({ nombre, href, trazos }) => (
+                <li>
+                    <a
+                        href={href}
+                        aria-label={nombre}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            {trazos.map((d) => (
+                                <path d={d} />
+                            ))}
+                        </svg>
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </section>
+</footer>
+
+<style>
+    .footer {
+        width: 100%;
+        background-color: var(--kala-black);
+        border-top: 1px solid var(--space-convoy);
+        color: var(--vintage-charm);
+    }
+
+    .footer-contenido {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 2.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .izquierda {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    
+
+    .copy,
+    .lema {
+        font-size: 0.95rem;
+    }
+
+    .lema {
+        color: var(--vintage-charm);
+    }
+
+    .redes {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+         a {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            color: inherit;
+            transition:
+                color 0.2s ease,
+                transform 0.2s ease;
+
+             &:hover {
+                color: var(--vintage-charm);
+                transform: translateY(-2px);
+             }
+        }
+
+        svg {
+            width: 26px;
+            height: 26px;
+        }
+    }
+
+
+    @media (max-width: 720px) {
+        .footer-contenido {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .izquierda {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .redes a {
+            transition: none;
+        }
+    }
+</style>
