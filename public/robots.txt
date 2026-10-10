@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Actualiza esta URL con el dominio real de tu sitio.
+Sitemap: https://carmeetsv.sistemaues.me/

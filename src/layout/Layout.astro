@@ -14,6 +14,7 @@ const { title, description, image } = Astro.props;
 const canonicalURL = Astro.site
     ? new URL(Astro.url.pathname, Astro.site)
     : undefined;
+const pageURL = canonicalURL ?? Astro.url;
 const imagenURL = image ? new URL(image, Astro.url) : undefined;
 const tieneHero = Astro.slots.has("hero");
 ---
@@ -26,6 +27,9 @@ const tieneHero = Astro.slots.has("hero");
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="generator" content={Astro.generator} />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="author" content="Car Meet SV" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -45,16 +49,18 @@ const tieneHero = Astro.slots.has("hero");
         <meta name="description" content={description} />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={Astro.url.href} />
+        <meta property="og:locale" content="es_SV" />
+        <meta property="og:site_name" content="Car Meet SV" />
+        <meta property="og:url" content={pageURL} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         {imagenURL && <meta property="og:image" content={imagenURL} />}
 
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content={Astro.url.href} />
-        <meta property="twitter:title" content={title} />
-        <meta property="twitter:description" content={description} />
-        {imagenURL && <meta property="twitter:image" content={imagenURL} />}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={pageURL} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        {imagenURL && <meta name="twitter:image" content={imagenURL} />}
     </head>
     <body>
         <Navbar />
