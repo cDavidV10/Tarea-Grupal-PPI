@@ -1,8 +1,9 @@
 ---
 const enlaces = [
-    { href: "#inicio", texto: "Inicio" },
+    { href: "/", texto: "Inicio" },
     { href: "#eventos", texto: "Eventos" },
     { href: "#pistas", texto: "Pistas" },
+    { href: "/about", texto: "Sobre Nosostros"}
 ];
 ---
 
@@ -34,10 +35,12 @@ const enlaces = [
     }
 
     .navbar {
-        position: sticky;
+        position: fixed;
         top: 0;
+        right: 0;
+        left: 0;
         z-index: 1000;
-        background-color: var(--kala-black);
+        background-color: transparent;
         border-bottom: 1px solid var(--space-convoy);
         color: var(--vintage-charm);
         font-size: 0.95rem;
@@ -47,6 +50,7 @@ const enlaces = [
 
     .navbar:has(.navbar-toggle[aria-expanded="true"]) {
         border-bottom-color: transparent;
+        background-color: rgb(33 23 24 / 0.98);;
     }
 
     .navbar-barra {
