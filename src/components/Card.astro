@@ -1,0 +1,192 @@
+---
+const secciones = [
+    {
+        titulo: "Eventos",
+        descripcion: "Todos los eventos reunidos en un solo lugar",
+        url: "/eventos",
+        img: "/images/portadas/jabali.webp",
+        a: "#b00303",
+        b: "#211718",
+    },
+    {
+        titulo: "Pistas",
+        descripcion: "Descubre todas las pistas de El Salvador",
+        url: "/pistas",
+        img: "/images/portadas/pista.webp",
+        a: "#3c4755",
+        b: "#211718",
+    },
+    {
+        titulo: "Clubes",
+        descripcion: "Aprende sobre los clubes existentes",
+        img: "/images/portadas/clubes.webp",
+        url: "/clubes",
+        a: "#3c4755",
+        b: "#b00303",
+    },
+    {
+        titulo: "Noticias",
+        descripcion: "Las últimas noticias",
+        url: "/noticias",
+        img: "/images/portadas/noticia.webp",
+        a: "#637687",
+        b: "#3c4755",
+    },
+    {
+        titulo: "Sobre nosotros",
+        descripcion: "Descubre quiénes somos",
+        url: "/sobre-nosotros",
+        a: "#211718",
+        b: "#637687",
+    },
+];
+---
+
+<section class="container">
+    <article class="info">
+        <span>Explora</span>
+        <h2>Todo lo que necesitas saber</h2>
+    </article>
+    <article class="grid-seccion">
+        {
+            secciones.map(({ titulo, descripcion, url, img, a, b }, i) => (
+                <a
+                    href={url}
+                    class="grid-item"
+                    data-num={String(i + 1).padStart(2, "0")}
+                    style={`--a:${a};--b:${b}${img ? `;--img:url(${img})` : ""}`}
+                >
+                    <h3>{titulo}</h3>
+                    <p>{descripcion}</p>
+                </a>
+            ))
+        }
+    </article>
+</section>
+
+<style>
+    .container {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 5rem 1.5rem;
+    }
+
+    .info {
+        margin-bottom: 2.5rem;
+
+        span {
+            display: inline-block;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            color: #e0342c;
+        }
+
+        h2 {
+            max-width: 20ch;
+            font-size: clamp(2rem, 5vw, 3.25rem);
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+    }
+
+    .grid-seccion {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1.25rem;
+
+        .grid-item {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 16rem;
+            padding: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgb(247 240 236 / 0.12);
+            border-radius: 12px;
+            background:
+                linear-gradient(
+                    to top,
+                    rgb(33 23 24 / 0.92) 0%,
+                    rgb(33 23 24 / 0.45) 55%,
+                    rgb(33 23 24 / 0.1) 100%
+                ),
+                var(--img, linear-gradient(145deg, var(--a), var(--b)));
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-decoration: none;
+            transition: transform 0.25s ease;
+
+            &:nth-child(-n + 2) {
+                grid-column: span 3;
+            }
+
+            &:nth-child(n + 3) {
+                grid-column: span 2;
+            }
+
+            &::before {
+                content: attr(data-num);
+                position: absolute;
+                top: 1.25rem;
+                left: 1.5rem;
+                font-size: 3rem;
+                font-weight: 700;
+                line-height: 1;
+                opacity: 0.5;
+            }
+
+            &::after {
+                content: "Explorar →";
+                align-self: flex-start;
+                margin-top: 1rem;
+                font-weight: 500;
+                transition: transform 0.25s ease;
+            }
+
+            h3 {
+                font-size: 1.6rem;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+            }
+
+            p {
+                margin-top: 0.25rem;
+                color: rgb(255 255 255 / 0.85);
+            }
+
+            &:hover {
+                transform: translateY(-4px);
+            }
+
+            &:hover::after {
+                transform: translateX(6px);
+            }
+        }
+    }
+
+    @media (max-width: 720px) {
+        .container {
+            padding: 3.5rem 1.5rem;
+        }
+
+        .grid-seccion {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-seccion .grid-item:nth-child(n) {
+            grid-column: auto;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .grid-seccion .grid-item,
+        .grid-seccion .grid-item::after {
+            transition: none;
+        }
+    }
+</style>
