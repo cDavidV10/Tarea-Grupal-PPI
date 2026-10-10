@@ -8,16 +8,16 @@
         fetchpriority="high"
         src="/images/hero-image.webp"
     />
-    <div class="tinte"></div>
-    <div class="sombra"></div>
-    <div class="contenido">
+    <article class="tinte"></article>
+    <article class="sombra"></article>
+    <article class="contenido">
         <p class="eyebrow">Donde se vive la cultura del motor</p>
         <h1>La cultura del motor en El Salvador</h1>
         <p class="lead">
             La escena automotriz, en un solo lugar: eventos, pistas, noticias y
             clubes.
         </p>
-    </div>
+    </article>
 </section>
 
 <style>
@@ -109,15 +109,44 @@
 
     @media (max-width: 720px) {
         .hero {
-            align-items: flex-end;
+            align-items: center;
+        }
+
+        .escena {
+            object-position: 47% 50%;
+        }
+
+        .foto {
+            filter: saturate(0.85) contrast(1.08) brightness(1);
+        }
+
+        .tinte {
+            opacity: 0.55;
+        }
+
+        .contenido {
+            padding: 6rem 1.5rem 4rem;
+            text-align: center;
+        }
+
+        .eyebrow,
+        .hero h1,
+        .lead {
+            text-shadow: 0 2px 18px rgba(33, 23, 24, 0.85);
+        }
+
+        .hero h1,
+        .lead {
+            margin-inline: auto;
         }
 
         .sombra {
             background: linear-gradient(
-                to top,
-                #211718 0%,
-                rgba(33, 23, 24, 0.82) 45%,
-                rgba(33, 23, 24, 0.35) 100%
+                to bottom,
+                rgba(33, 23, 24, 0.85) 0%,
+                rgba(33, 23, 24, 0.6) 35%,
+                rgba(33, 23, 24, 0.6) 65%,
+                rgba(33, 23, 24, 0.85) 100%
             );
         }
     }
