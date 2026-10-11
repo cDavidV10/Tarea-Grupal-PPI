@@ -1,0 +1,136 @@
+---
+import Layout from "../layout/Layout.astro";
+
+const info = {
+    descripcion:
+        "¿Quiénes somos? Car Meeting SV es una página web dedicada a reunir información sobre la comunidad automotriz de El Salvador. Aquí encontrarás noticias, eventos, clubes y pistas, todo en un mismo lugar. Su objetivo es mantener informadas a las personas, dar a conocer nuevos lugares y actividades, y conectar a quienes comparten la pasión por la cultura del motor. Somos una plataforma informativa que busca dar visibilidad a la escena automotriz salvadoreña. No organizamos eventos ni vendemos entradas; recopilamos información y facilitamos el acceso a las páginas web y redes sociales oficiales de clubes, organizadores y pistas.",
+    vision: "Ser la plataforma de referencia de la cultura automotriz en El Salvador, reconocida por reunir información confiable y actualizada que conecte a clubes, aficionados y entusiastas de los carros en todo el país.",
+    mision: "Promover la cultura automotriz en El Salvador mediante la difusión de información relevante y actualizada sobre noticias, eventos, clubes y pistas, reunida en un solo lugar para acercar a las personas que comparten esta pasión.",
+};
+---
+
+<Layout title="Sobre Nosotros" description="Información del equipo">
+    <section class="sobre-nosotros">
+        <h2>Sobre Nosoztros</h2>
+
+        <article class="info-block">
+            <p>{info.descripcion}</p>
+        </article>
+
+        <div class="metas-grid">
+            <article class="meta-item">
+                <h3>Misión</h3>
+                <p>{info.mision}</p>
+            </article>
+
+            <article class="meta-item">
+                <h3>Visión</h3>
+                <p>{info.vision}</p>
+            </article>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .sobre-nosotros {
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 4rem 1.5rem 5rem;
+    }
+
+    .sobre-nosotros h2 {
+        margin-bottom: 2.5rem;
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        color: var(--vintage-charm, #f7f0ec);
+    }
+
+    .sobre-nosotros h2::before {
+        content: "";
+        display: block;
+        width: 3rem;
+        height: 4px;
+        margin-bottom: 1.25rem;
+        border-radius: 2px;
+        background-color: var(--all-systems-red, #b00303);
+    }
+
+    .info-block {
+        max-width: 70ch;
+        margin-bottom: 3.5rem;
+        padding-left: 1.5rem;
+        border-left: 3px solid var(--all-systems-red, #b00303);
+        text-wrap: pretty;
+    }
+
+    .info-block p {
+        font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+        line-height: 1.7;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .metas-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+        .metas-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .meta-item {
+        position: relative;
+        padding: 2.25rem 2rem 2rem;
+        border: 1px solid rgb(247 240 236 / 0.12);
+        border-radius: 12px;
+        background: linear-gradient(
+            145deg,
+            rgb(60 71 85 / 0.55),
+            rgb(33 23 24 / 0.6)
+        );
+        transition:
+            transform 0.25s ease,
+            border-color 0.25s ease;
+    }
+
+    .meta-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 2rem;
+        width: 3rem;
+        height: 4px;
+        border-radius: 0 0 2px 2px;
+        background-color: var(--all-systems-red, #b00303);
+    }
+
+    .meta-item:hover {
+        transform: translateY(-4px);
+        border-color: rgb(224 52 44 / 0.6);
+    }
+
+    .meta-item h3 {
+        margin-bottom: 0.75rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--vintage-charm, #f7f0ec);
+    }
+
+    .meta-item p {
+        font-size: 1.05rem;
+        line-height: 1.65;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .meta-item {
+            transition: none;
+        }
+    }
+</style>
