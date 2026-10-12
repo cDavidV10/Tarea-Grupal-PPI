@@ -1,0 +1,559 @@
+---
+import Layout from "../layout/Layout.astro";
+
+interface Pista {
+    nombre: string;
+    categoria: string;
+    lugar: string;
+    direccion?: string;
+    horario?: string;
+    tipo?: string;
+    contacto?: string;
+    descripcion: string;
+    img?: string;
+    lat: number;
+    lng: number;
+    aproximada?: boolean;
+    web?: string;
+}
+
+const pistas: Pista[] = [
+    {
+        nombre: "Autódromo Internacional El Jabalí",
+        categoria: "Autódromo",
+        lugar: "Quezaltepeque, La Libertad",
+        direccion: "Km 34½ carretera Panamericana Oeste, Quezaltepeque, La Libertad",
+        horario: "Según el evento. Noche de echadas: viernes, 7:00 p. m. a 12:00 a. m.",
+        tipo: "Circuito, arrancones y karting",
+        descripcion:
+            "Circuito permanente de 3.25 km y 15 curvas, el más largo de Centroamérica. Sede de carreras, arrancones, karting y las noches de echadas de los viernes.",
+        img: "/images/portadas/jabali.webp",
+        lat: 13.8099,
+        lng: -89.3299,
+        web: "https://www.autodromoeljabali.com",
+    },
+    {
+        nombre: "Pista Singüil",
+        categoria: "Pista",
+        lugar: "Santa Ana",
+        tipo: "Arrancones y eventos",
+        descripcion:
+            "Pista donde se organizan eventos de camiones y autos, como el aniversario de Inox for Trucks y el Nissan Fest.",
+        img: "/images/pistas/singuil.webp",
+        lat: 13.9942,
+        lng: -89.5597,
+        aproximada: true,
+        web: "https://www.facebook.com/pistasinguilelsalvador",
+    },
+    {
+        nombre: "San Miguel Racetrack",
+        categoria: "Pista",
+        lugar: "Pista El Platanar, San Miguel",
+        tipo: "Motos y velocidad",
+        descripcion:
+            "Pista de la zona oriental que recibe campeonatos de motos y otros eventos de velocidad.",
+        img: "/images/portadas/noticia.webp",
+        lat: 13.4833,
+        lng: -88.1833,
+        aproximada: true,
+        web: "https://www.facebook.com/SanMiguelRacetrack",
+    },
+    {
+        nombre: "Zakte Raceway",
+        categoria: "Pista",
+        lugar: "Zacatecoluca, La Paz",
+        tipo: "Arrancones y tardes de echadas",
+        descripcion:
+            "Pista de Zacatecoluca que organiza eventos y tardes de echadas, con carreras de 1/4 de milla.",
+        img: "/images/pistas/zakte.webp",
+        lat: 13.5083,
+        lng: -88.8694,
+        aproximada: true,
+        web: "https://www.facebook.com/ZakteRacewayOficial/",
+    },
+];
+---
+
+<Layout title="Pistas" description="Descubre todas las pistas y autódromos de El Salvador">
+    <div slot="hero">
+        <nav class="migas" aria-label="Ruta de navegación">
+            <ol>
+                <li><a href="/">Inicio</a></li>
+                <li aria-current="page">Pistas</li>
+            </ol>
+        </nav>
+
+        <section class="portada">
+            <div class="portada-contenido">
+                <div class="portada-caja">
+                    <h1>Pistas</h1>
+                    <p>Descubre todas las pistas y autódromos de El Salvador</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="seccion-mapa">
+        <div class="contenedor">
+            <h2>Pistas y autódromos</h2>
+
+            <div
+                id="mapa"
+                class="mapa"
+                role="region"
+                aria-label="Mapa interactivo de pistas y autódromos"
+                data-pistas={JSON.stringify(pistas)}
+            >
+            </div>
+
+            <ul class="lista-pistas">
+                {pistas.map((p, i) => (
+                    <li>
+                        <button type="button" class="pista-boton" data-i={i}>
+                            <span class="pista-nombre">{p.nombre}</span>
+                            <span class="pista-lugar">{p.lugar}</span>
+                        </button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    </section>
+</Layout>
+
+<script>
+    import L from "leaflet";
+    import "leaflet/dist/leaflet.css";
+
+    interface Pista {
+        nombre: string;
+        categoria: string;
+        lugar: string;
+        direccion?: string;
+        horario?: string;
+        tipo?: string;
+        contacto?: string;
+        descripcion: string;
+        img?: string;
+        lat: number;
+        lng: number;
+        aproximada?: boolean;
+        web?: string;
+    }
+
+    const contenedor = document.querySelector<HTMLElement>("#mapa")!;
+    const pistas: Pista[] = JSON.parse(contenedor.dataset.pistas ?? "[]");
+
+    const mapa = L.map(contenedor, {
+        scrollWheelZoom: false,
+        dragging: !L.Browser.mobile,
+    });
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 19,
+        className: "mapa-oscuro",
+    }).addTo(mapa);
+
+    const icono = L.divIcon({
+        className: "marcador",
+        html: "<span></span>",
+        iconSize: [30, 42],
+        iconAnchor: [15, 36],
+        popupAnchor: [0, -34],
+    });
+
+    function el<K extends keyof HTMLElementTagNameMap>(tag: K, clase?: string, texto?: string) {
+        const nodo = document.createElement(tag);
+        if (clase) nodo.className = clase;
+        if (texto) nodo.textContent = texto;
+        return nodo;
+    }
+
+    function enlace(texto: string, href: string, clase: string) {
+        const a = el("a", clase, texto);
+        a.href = href;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        return a;
+    }
+
+    function crearPopup(p: Pista) {
+        const caja = el("div", "popup");
+
+        const media = el("div", "popup-media");
+        if (p.img) {
+            const foto = el("img");
+            foto.src = p.img;
+            foto.alt = `Vista de ${p.nombre}`;
+            media.append(foto);
+        }
+        const volver = el("button", "popup-volver", "←");
+        volver.type = "button";
+        volver.setAttribute("aria-label", "Cerrar ventana");
+        volver.addEventListener("click", () => mapa.closePopup());
+        media.append(volver);
+
+        const datos = el("dl", "popup-datos");
+        const filas: [string, string | undefined][] = [
+            ["Ubicación", p.direccion ?? p.lugar],
+            ["Horario", p.horario],
+            ["Tipo", p.tipo],
+            ["Contacto", p.contacto],
+        ];
+        filas.forEach(([etiqueta, valor]) => {
+            if (!valor) return;
+            datos.append(el("dt", undefined, etiqueta), el("dd", undefined, valor));
+        });
+
+        const cuerpo = el("div", "popup-cuerpo");
+        cuerpo.append(
+            el("span", "popup-etiqueta", p.categoria),
+            el("h3", undefined, p.nombre),
+            datos,
+            el("p", "popup-desc", p.descripcion),
+        );
+        if (p.aproximada) cuerpo.append(el("p", "popup-aviso", "Ubicación aproximada"));
+        if (p.web) cuerpo.append(enlace("Más información", p.web, "popup-boton"));
+        cuerpo.append(
+            enlace(
+                "Cómo llegar",
+                `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${p.nombre}, El Salvador`)}`,
+                "popup-ruta",
+            ),
+        );
+
+        caja.append(media, cuerpo);
+        return caja;
+    }
+
+    const marcadores = pistas.map((p) =>
+        L.marker([p.lat, p.lng], { icon: icono, title: p.nombre })
+            .addTo(mapa)
+            .bindPopup(crearPopup(p), {
+                maxWidth: 360,
+                minWidth: 300,
+                closeButton: false,
+                className: "popup-pista",
+                autoPanPaddingTopLeft: [24, 24],
+                autoPanPaddingBottomRight: [24, 24],
+            }),
+    );
+
+    mapa.fitBounds(L.latLngBounds(pistas.map((p) => [p.lat, p.lng] as [number, number])), {
+        padding: [48, 48],
+        maxZoom: 10,
+    });
+
+    document.querySelectorAll<HTMLButtonElement>(".pista-boton").forEach((boton) => {
+        boton.addEventListener("click", () => {
+            const i = Number(boton.dataset.i);
+            contenedor.scrollIntoView({ behavior: "smooth", block: "center" });
+            const destino = L.latLng(pistas[i].lat, pistas[i].lng);
+            mapa.closePopup();
+            if (mapa.getZoom() === 14 && mapa.getCenter().distanceTo(destino) < 5) {
+                marcadores[i].openPopup();
+                return;
+            }
+            mapa.once("moveend", () => marcadores[i].openPopup());
+            mapa.flyTo(destino, 14);
+        });
+    });
+</script>
+
+<style>
+    .migas {
+        padding-top: calc(4rem + 1px);
+        border-bottom: 1px solid var(--space-convoy, #637687);
+        background-color: rgb(247 240 236 / 0.04);
+    }
+
+    .migas ol {
+        display: flex;
+        gap: 0.5rem;
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        list-style: none;
+    }
+
+    .migas li + li::before {
+        content: ">";
+        margin-right: 0.5rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .migas a {
+        color: #e0342c;
+        text-decoration: none;
+    }
+
+    .migas a:hover {
+        text-decoration: underline;
+    }
+
+    .portada {
+        display: flex;
+        align-items: center;
+        min-height: 18rem;
+        padding: 3rem 1.5rem;
+        background:
+            linear-gradient(90deg, rgb(33 23 24 / 0.85), rgb(33 23 24 / 0.35)),
+            url("/images/portadas/portada-pista.webp") center / cover;
+        border-bottom: 4px solid;
+        border-image: linear-gradient(
+                90deg,
+                var(--all-systems-red, #b00303),
+                var(--space-convoy, #637687),
+                var(--vintage-charm-medio, #c5b1a6)
+            )
+            1;
+    }
+
+    .portada-contenido {
+        width: 100%;
+        max-width: 64rem;
+        margin: 0 auto;
+    }
+
+    .portada-caja {
+        display: inline-block;
+        max-width: 28rem;
+        padding: 1.5rem 2rem;
+        border: 1px solid rgb(247 240 236 / 0.15);
+        border-radius: 12px;
+        background-color: rgb(33 23 24 / 0.78);
+        backdrop-filter: blur(6px);
+    }
+
+    .portada h1 {
+        margin-bottom: 0.25rem;
+        font-size: clamp(2.25rem, 6vw, 3.5rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+    }
+
+    .portada p {
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .contenedor {
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+    }
+
+    .seccion-mapa h2 {
+        margin-bottom: 1.5rem;
+        font-size: clamp(1.5rem, 3.5vw, 2rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .mapa {
+        height: clamp(28rem, 72vh, 40rem);
+        isolation: isolate;
+        overflow: hidden;
+        border: 1px solid rgb(247 240 236 / 0.15);
+        border-radius: 12px;
+        background-color: var(--kala-black, #211718);
+    }
+
+    .lista-pistas {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+        list-style: none;
+    }
+
+    .pista-boton {
+        display: grid;
+        gap: 0.15rem;
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border: 1px solid rgb(247 240 236 / 0.15);
+        border-radius: 8px;
+        background-color: rgb(60 71 85 / 0.4);
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+    .pista-boton:hover {
+        border-color: var(--all-systems-red, #b00303);
+        background-color: rgb(176 3 3 / 0.15);
+    }
+
+    .pista-nombre {
+        font-weight: 700;
+    }
+
+    .pista-lugar {
+        font-size: 0.9rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .mapa {
+        font-family: inherit;
+    }
+
+    .mapa :global(.mapa-oscuro) {
+        filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.95) saturate(0.7);
+    }
+
+    .mapa :global(.leaflet-control-attribution) {
+        background-color: rgb(33 23 24 / 0.8);
+        color: #c5b1a6;
+    }
+
+    .mapa :global(.leaflet-control-attribution a) {
+        color: #f7f0ec;
+    }
+
+    .mapa :global(.marcador span) {
+        display: block;
+        width: 30px;
+        height: 30px;
+        border: 3px solid #fff;
+        border-radius: 50% 50% 50% 0;
+        background-color: #b00303;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 0.5);
+        transform: rotate(-45deg);
+    }
+
+    .mapa :global(.popup-pista .leaflet-popup-content-wrapper),
+    .mapa :global(.popup-pista .leaflet-popup-tip) {
+        background-color: #211718;
+        color: #f7f0ec;
+        border: 1px solid rgb(247 240 236 / 0.15);
+    }
+
+    .mapa :global(.popup-pista .leaflet-popup-content-wrapper) {
+        padding: 0;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .mapa :global(.popup-pista .leaflet-popup-content) {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .mapa :global(.popup-media) {
+        position: relative;
+        height: 9.5rem;
+        background: linear-gradient(145deg, #3c4755, #211718);
+    }
+
+    .mapa :global(.popup-media img) {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .mapa :global(.popup-volver) {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        width: 2.25rem;
+        height: 2.25rem;
+        border: 1px solid rgb(247 240 236 / 0.3);
+        border-radius: 50%;
+        background-color: rgb(33 23 24 / 0.75);
+        color: #fff;
+        font-size: 1.1rem;
+        cursor: pointer;
+    }
+
+    .mapa :global(.popup-volver:hover) {
+        background-color: #b00303;
+    }
+
+    .mapa :global(.popup-cuerpo) {
+        padding: 1.1rem 1.25rem 1.25rem;
+    }
+
+    .mapa :global(.popup-etiqueta) {
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        padding: 0.1rem 0.6rem;
+        border: 1px solid rgb(247 240 236 / 0.35);
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+
+    .mapa :global(.popup-cuerpo h3) {
+        margin: 0 0 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .mapa :global(.popup-datos) {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.35rem 1rem;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    .mapa :global(.popup-datos dt) {
+        font-weight: 500;
+    }
+
+    .mapa :global(.popup-datos dd) {
+        margin: 0;
+        color: #c5b1a6;
+    }
+
+    .mapa :global(.popup-desc) {
+        margin: 0.9rem 0 1rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #c5b1a6;
+    }
+
+    .mapa :global(.popup-aviso) {
+        margin: -0.4rem 0 0.9rem;
+        font-size: 0.8rem;
+        color: #e0342c;
+    }
+
+    .mapa :global(.popup-boton) {
+        display: block;
+        padding: 0.65rem 1rem;
+        border: 2px solid #637687;
+        border-radius: 4px;
+        color: #f7f0ec;
+        font-weight: 500;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .mapa :global(.popup-boton:hover) {
+        border-color: #b00303;
+        background-color: #b00303;
+    }
+
+    .mapa :global(.popup-ruta) {
+        display: block;
+        margin-top: 0.6rem;
+        font-size: 0.85rem;
+        text-align: center;
+        color: #e0342c;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .pista-boton {
+            transition: none;
+        }
+    }
+</style>
