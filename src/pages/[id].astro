@@ -1,0 +1,271 @@
+---
+import Layout from "../layout/Layout.astro";
+import {
+    eventos,
+    slugEvento,
+    textoPrecio,
+    type Evento,
+} from "../data/eventos";
+
+export function getStaticPaths() {
+    const archivosDescripciones = import.meta.glob<string>(
+        "../descripciones/eventos/*.md",
+        { eager: true, query: "?raw", import: "default" },
+    );
+    const extraerDescripcion = (contenido?: string) => {
+        if (!contenido) return "";
+        const inicio = contenido.search(/Descripción:\s*/i);
+        if (inicio < 0) return "";
+
+        return contenido
+            .slice(inicio)
+            .replace(/^Descripción:\s*/i, "")
+            .replace(/\s+/g, " ")
+            .replace(/\*\*/g, "")
+            .trim();
+    };
+
+    return eventos.map((evento) => {
+        const archivo = evento.descripcionArchivo
+            ? `../descripciones/eventos/${evento.descripcionArchivo}.md`
+            : "";
+        const descripcion = extraerDescripcion(archivosDescripciones[archivo]);
+
+        return {
+            params: { id: slugEvento(evento.nombre) },
+            props: { evento, descripcion },
+        };
+    });
+}
+
+interface Props {
+    evento: Evento;
+    descripcion: string;
+}
+
+const { evento, descripcion } = Astro.props;
+const descripcionMeta =
+    descripcion ||
+    `Consulta los detalles de ${evento.nombre}: fecha, horario, lugar, costo y más información del evento.`;
+const fecha =
+    evento.fecha
+        ? new Date(`${evento.fecha}T12:00:00`).toLocaleDateString("es-SV", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+          })
+        : evento.frecuencia ?? "Por confirmar";
+const imagen = evento.img
+    ? `/images/eventos/${evento.img}`
+    : "/images/hero-image.webp";
+---
+
+<Layout
+    title={`${evento.nombre} | Car Meet SV`}
+    description={descripcionMeta}
+    image={imagen}
+    keywords={`${evento.nombre}, ${evento.tipo}, eventos automotrices, El Salvador, Car Meet SV`}
+>
+    <section class="detalle-contenedor" aria-label={`Detalles de ${evento.nombre}`}>
+        <article class="detalle-evento">
+            <img class="portada-evento" src={imagen} alt={`Portada de ${evento.nombre}`} />
+
+            <div class="contenido-evento">
+                <a class="volver" href="/eventos" aria-label="Volver a eventos">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M15 18l-6-6 6-6" />
+                        <path d="M9 12h12" />
+                    </svg>
+                </a>
+
+                <span class="categoria">{evento.tipo}</span>
+                <h1>{evento.nombre}</h1>
+
+                <dl class="datos-evento">
+                    <div>
+                        <dt>Fecha</dt>
+                        <dd>{fecha}</dd>
+                    </div>
+                    <div>
+                        <dt>Hora</dt>
+                        <dd>{evento.hora ?? "Por confirmar"}</dd>
+                    </div>
+                    <div>
+                        <dt>Lugar</dt>
+                        <dd>{evento.lugar}</dd>
+                    </div>
+                    <div>
+                        <dt>Costo</dt>
+                        <dd>{textoPrecio(evento)}</dd>
+                    </div>
+                </dl>
+
+                <p class="descripcion">{descripcionMeta}</p>
+                <a class="mas-informacion" href={evento.url} target="_blank" rel="noopener noreferrer">
+                    Más información
+                </a>
+            </div>
+        </article>
+    </section>
+</Layout>
+
+<style>
+    .detalle-contenedor {
+        max-width: 76rem;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+    }
+
+    .detalle-evento {
+        display: grid;
+        grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 1.15fr);
+        min-height: 24rem;
+        overflow: hidden;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 12px;
+        background: var(--kala-black, #211718);
+        color: var(--vintage-charm, #f7f0ec);
+    }
+
+    .portada-evento {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 24rem;
+        object-fit: cover;
+        background: var(--cape-storm, #3c4755);
+    }
+
+    .contenido-evento {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 3rem clamp(1.5rem, 4vw, 3.5rem);
+    }
+
+    .volver {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        place-items: center;
+        border-radius: 50%;
+        color: inherit;
+        transition: background-color 0.2s ease;
+    }
+
+    .volver:hover,
+    .volver:focus-visible {
+        background: rgb(247 240 236 / 0.12);
+    }
+
+    .volver svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .categoria {
+        margin: 0 3.5rem 0.75rem 0;
+        padding: 0.2rem 0.65rem;
+        border: 1px solid var(--all-systems-red, #b00303);
+        border-radius: 3px;
+        font-size: 0.8rem;
+        color: var(--all-systems-red, #e0342c);
+    }
+
+    h1 {
+        margin-bottom: 1.25rem;
+        font-size: clamp(1.8rem, 3vw, 2.7rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+    }
+
+    .datos-evento {
+        display: grid;
+        gap: 0.6rem;
+        width: 100%;
+    }
+
+    .datos-evento div {
+        display: grid;
+        grid-template-columns: 5rem minmax(0, 1fr);
+        gap: 0.75rem;
+    }
+
+    .datos-evento dt {
+        font-weight: 600;
+    }
+
+    .datos-evento dd {
+        overflow-wrap: anywhere;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .descripcion {
+        margin-top: 1rem;
+        line-height: 1.7;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .mas-informacion {
+        align-self: center;
+        margin-top: 1.5rem;
+        padding: 0.55rem 2rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 4px;
+        color: inherit;
+        text-align: center;
+        text-decoration: none;
+        transition:
+            color 0.2s ease,
+            background-color 0.2s ease;
+    }
+
+    .mas-informacion:hover,
+    .mas-informacion:focus-visible {
+        border-color: var(--all-systems-red, #b00303);
+        background: var(--all-systems-red, #b00303);
+        color: #fff;
+    }
+
+    @media (max-width: 720px) {
+        .detalle-contenedor {
+            padding-top: 1.5rem;
+        }
+
+        .detalle-evento {
+            grid-template-columns: 1fr;
+        }
+
+        .portada-evento {
+            height: auto;
+            min-height: 0;
+            aspect-ratio: 16 / 10;
+        }
+
+        .contenido-evento {
+            padding: 3.5rem 1.5rem 2rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .volver,
+        .mas-informacion {
+            transition: none;
+        }
+    }
+</style>

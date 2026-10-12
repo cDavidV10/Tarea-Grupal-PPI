@@ -1,20 +1,11 @@
 ---
 import Layout from "../layout/Layout.astro";
-
-interface Evento {
-    fecha?: string;
-    frecuencia?: string;
-    dia?: string;
-    horaCorta?: string;
-    tipo: string;
-    nombre: string;
-    img?: string;
-    lugar: string;
-    hora: string | null;
-    precio: number | null;
-    precioTexto?: string;
-    url: string;
-}
+import {
+    eventos,
+    slugEvento,
+    textoPrecio,
+    type Evento,
+} from "../data/eventos";
 
 const dias = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
 const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
@@ -28,199 +19,7 @@ const colores: Record<string, [string, string]> = {
     "Noche de echadas": ["#3c4755", "#211718"],
 };
 
-const eventosRecurrentes: Evento[] = [
-    {
-        frecuencia: "Todos los viernes",
-        dia: "VIE",
-        horaCorta: "7 P. M.",
-        tipo: "Noche de echadas",
-        nombre: "Noche de echadas",
-        img: "noche-de-echadas.webp",
-        lugar: "Autódromo Internacional El Jabalí, La Libertad",
-        hora: "7:00 p. m. – 12:00 a. m.",
-        precio: 3,
-        precioTexto: "Entrada: $3.00 (competidores $5.00)",
-        url: "https://www.autodromoeljabali.com/eventos/noche-de-echadas",
-    },
-];
-
-const eventosProximos: Evento[] = [
-    {
-        fecha: "2026-10-17",
-        tipo: "Car Meet",
-        nombre: "Racemania Meet Weekend",
-        img: "racemania-meet-weekend.webp",
-        lugar: "Autódromo Internacional El Jabalí, La Libertad",
-        hora: "12:00 p. m.",
-        precio: 6,
-        url: "https://www.vamoseventos.com/event/racemania-meet-weekend-0a7dc8be-20fa-4e66-ac71-d881d10d12d3",
-    },
-    {
-        fecha: "2026-10-17",
-        tipo: "Car Show",
-        nombre: "Supercar Fest",
-        img: "SUPERCAR_SANTA_ANA.webp",
-        lugar: "Las Ramblas, Santa Ana",
-        hora: "1:00 p. m. – 6:00 p. m.",
-        precio: null,
-        precioTexto: "Entrada: llevar un juguete o apoyar con más de una persona",
-        url: "https://www.tiktok.com/@engine_hub503/photo/7689159518495755527?image_index=2",
-    },
-    {
-        fecha: "2026-10-18",
-        tipo: "Car Show",
-        nombre: "All Japan Day 2026",
-        img: "All_JAPAN_DAY.webp",
-        lugar: "Parqueo UCA",
-        hora: "8:00 a. m.",
-        precio: 1,
-        precioTexto: "Entrada: $1.00 · Parqueo: $2.00",
-        url: "https://www.facebook.com/reel/1416963087295625?locale=es_LA",
-    },
-    {
-        fecha: "2026-10-24",
-        tipo: "Car Meet",
-        nombre: "Car Meet Formando Sonrisas 2026",
-        img: "car-meet-formando-sonrisas.webp",
-        lugar: "Garden Mall San Miguel, San Miguel",
-        hora: "3:00 p. m.",
-        precio: null,
-        precioTexto: "Entrada: un juguete",
-        url: "https://www.facebook.com/gardenmallsv/posts/car-meet-sonrisas-2026-en-garden-mall-nos-unimos-a-esta-noble-causa-con-los-chic/1506808444823299/",
-    },
-    {
-        fecha: "2026-10-25",
-        tipo: "Karting",
-        nombre: "Campeonato 4T, 6.ª ronda",
-        img: "campeonato-4t-ronda-6.webp",
-        lugar: "Autódromo Internacional El Jabalí, La Libertad",
-        hora: null,
-        precio: null,
-        url: "https://www.autodromoeljabali.com/karting/campeonato-4t",
-    },
-    {
-        fecha: "2026-10-31",
-        tipo: "Car Meet",
-        nombre: "Teyo Horror Night",
-        img: "Teyo_Night.webp",
-        lugar: "Teyo Detailing Studio, San Miguel",
-        hora: "6:00 p. m. – 11:00 p. m.",
-        precio: 3,
-        url: "https://vt.tiktok.com/ZSbTYrS2y/",
-    },
-    {
-        fecha: "2026-11-15",
-        tipo: "Car Show",
-        nombre: "Car Show Zacate Fest - Edición 1",
-        img: "car-show_ Zacateluca.webp",
-        lugar: "Pista El Salvador SpeedTrack (Ex Zacate Raceway)",
-        hora: "8:00 a. m. – 5:00 p. m.",
-        precio: null,
-        precioTexto: "Más detalles por confirmar",
-        url: "https://vt.tiktok.com/ZSbTYBjpE/",
-    },
-    {
-        fecha: "2026-11-15",
-        tipo: "Car Show",
-        nombre: "Dynamics Crew Competition",
-        img: "Dynamics.webp",
-        lugar: "Zacatecoluca, La Paz",
-        hora: "8:00 a. m. – 5:00 p. m.",
-        precio: null,
-        precioTexto: "Inscripción: $15 · Entrada: $2 · Parqueo: $3",
-        url: "https://vt.tiktok.com/ZSbT2pVkf/",
-    },
-    {
-        fecha: "2026-11-21",
-        tipo: "Car Show",
-        nombre: "Super Auto Show (SAS), edición XXXVIII",
-        img: "SAS.webp",
-        lugar: "Lugar por confirmar",
-        hora: null,
-        precio: null,
-        precioTexto: "Más detalles por confirmar",
-        url: "https://vt.tiktok.com/ZSbT2RbnG/",
-    },
-    {
-        fecha: "2026-11-22",
-        tipo: "Car Show",
-        nombre: "Classic Garage",
-        img: "classic_garage.webp",
-        lugar: "UCA",
-        hora: null,
-        precio: 1,
-        precioTexto: "Entrada: $1.00 · Parqueo: $3.00",
-        url: "https://vt.tiktok.com/ZSbTYgHqq/",
-    },
-    {
-        tipo: "Truck Show",
-        nombre: "Inox for Trucks, 10 años de aniversario",
-        img: "inox-for-trucks-10-aniversario.webp",
-        lugar: "Pista Singüil, Santa Ana",
-        hora: "12:00 p. m.",
-        precio: null,
-        url: "https://www.facebook.com/pistasinguilelsalvador/posts/pfbid0wXvNtS7PXaiMZs9PbN2HuAqSqUgLgc186fRxtYCoYdFsUYRG3jtx6aiUBB3EcYekl",
-    },
-    {
-        tipo: "Car Show",
-        nombre: "Nissan Fest",
-        img: "nissan-fest.webp",
-        lugar: "Pista Singüil, Santa Ana",
-        hora: null,
-        precio: null,
-        url: "https://www.facebook.com/pistasinguilelsalvador/posts/pfbid02yS7VEU6iys2NTaMQazGPRvr3RwcYNJ5zyZ8G55tU9Jz5caRbNW1MrGW2ARd9nh8Ul",
-    },
-];
-
-const eventosPasados: Evento[] = [
-    {
-        fecha: "2026-05-31",
-        tipo: "Resistencia",
-        nombre: "3 Horas de El Salvador",
-        img: "3-horas-de-el-salvador.webp",
-        lugar: "Autódromo Internacional El Jabalí, La Libertad",
-        hora: "8:00 a. m.",
-        precio: null,
-        url: "https://www.fiaregion4.com/novedades/noticias/el-salvador-sera-sede-de-las-3-horas-y-abrira-la-copa-centroamericana-de-endurance.html",
-    },
-    {
-        fecha: "2026-08-16",
-        tipo: "Car Show",
-        nombre: "Congo Fest Car Show 6.0",
-        img: "congo-fest-car-show-6.webp",
-        lugar: "El Congo, Santa Ana",
-        hora: "8:00 a. m.",
-        precio: 0,
-        url: "https://theeventus.com/event/15332",
-    },
-    {
-        fecha: "2026-09-06",
-        tipo: "Motovelocidad",
-        nombre: "Gran Premio Suzuki",
-        img: "gran-premio-suzuki.webp",
-        lugar: "Autódromo Internacional El Jabalí, La Libertad",
-        hora: "8:30 a. m.",
-        precio: 4,
-        url: "https://web.indes.gob.sv/?p=150308",
-    },
-    {
-        fecha: "2026-10-10",
-        tipo: "Karting",
-        nombre: "Cadet House",
-        img: "cadet-house.webp",
-        lugar: "Autódromo Internacional El Jabalí, La Libertad",
-        hora: "8:00 a. m.",
-        precio: 0,
-        url: "https://diarioelsalvador.com/dedeportes/el-karting-quemo-neumaticos-en-la-pista-el-jabali/853767",
-    },
-];
-
-const eventos: Evento[] = [...eventosRecurrentes, ...eventosProximos, ...eventosPasados];
 const tipos = [...new Set(eventos.map((e) => e.tipo))];
-
-const textoPrecio = (e: Evento) =>
-    e.precioTexto ??
-    (e.precio === null ? "Entrada por confirmar" : e.precio === 0 ? "Entrada gratis" : `Entrada: $${e.precio.toFixed(2)}`);
 
 const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoPrecio(e)].join(" · ");
 ---
@@ -268,32 +67,40 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
                             data-fecha={e.fecha}
                             data-recurrente={e.frecuencia ? "true" : undefined}
                         >
-                            {d ? (
-                                <div class="fecha">
-                                    <span>{dias[d.getDay()]}</span>
-                                    <b>{String(d.getDate()).padStart(2, "0")}</b>
-                                    <span>{meses[d.getMonth()]} {d.getFullYear()}</span>
+                            <a
+                                class="evento-enlace"
+                                href={`/${slugEvento(e.nombre)}`}
+                                aria-label={`Ver detalles de ${e.nombre}`}
+                            >
+                                {d ? (
+                                    <div class="fecha">
+                                        <span>{dias[d.getDay()]}</span>
+                                        <b>{String(d.getDate()).padStart(2, "0")}</b>
+                                        <span>{meses[d.getMonth()]} {d.getFullYear()}</span>
+                                    </div>
+                                ) : !e.frecuencia ? (
+                                    <div class="fecha">
+                                        <span>FECHA</span>
+                                        <b>—</b>
+                                        <span>POR DEFINIR</span>
+                                    </div>
+                                ) : (
+                                    <div class="fecha">
+                                        <span>SEMANAL</span>
+                                        <b>{e.dia}</b>
+                                        <span>{e.horaCorta}</span>
+                                    </div>
+                                )}
+                                <div class="miniatura" style={`${fondo}--a:${a};--b:${b}`}></div>
+                                <div class="info">
+                                    <span class="tipo">{e.frecuencia ? `${e.tipo} · ${e.frecuencia}` : e.tipo}</span>
+                                    <h3>{e.nombre}</h3>
+                                    <p class="detalles">{detalles(e)}</p>
                                 </div>
-                            ) : !e.frecuencia ? (
-                                <div class="fecha">
-                                    <span>FECHA</span>
-                                    <b>—</b>
-                                    <span>POR DEFINIR</span>
-                                </div>
-                            ) : (
-                                <div class="fecha">
-                                    <span>SEMANAL</span>
-                                    <b>{e.dia}</b>
-                                    <span>{e.horaCorta}</span>
-                                </div>
-                            )}
-                            <div class="miniatura" style={`${fondo}--a:${a};--b:${b}`}></div>
-                            <div class="info">
-                                <span class="tipo">{e.frecuencia ? `${e.tipo} · ${e.frecuencia}` : e.tipo}</span>
-                                <h3>{e.nombre}</h3>
-                                <p class="detalles">{detalles(e)}</p>
-                            </div>
-                            <a class="mas-info" href={e.url} target="_blank" rel="noopener noreferrer">Más información</a>
+                            </a>
+                            <a class="mas-info" href={`/${slugEvento(e.nombre)}`}>
+                                Más información
+                            </a>
                         </li>
                     );
                 })}
@@ -513,11 +320,28 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
 
     .evento {
         display: grid;
-        grid-template-columns: 4.5rem 7rem 1fr auto;
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: 1.5rem;
         align-items: center;
         padding: 1.5rem 0;
         border-top: 1px solid var(--space-convoy, #637687);
+    }
+
+    .evento-enlace {
+        display: grid;
+        grid-template-columns: 4.5rem 7rem minmax(0, 1fr);
+        gap: 1.5rem;
+        align-items: center;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .evento-enlace:hover .info h3,
+    .evento-enlace:focus-visible .info h3 {
+        color: var(--vintage-charm, #f7f0ec);
+        text-decoration: underline;
+        text-decoration-color: var(--all-systems-red, #b00303);
+        text-underline-offset: 0.2em;
     }
 
     .evento[hidden],
@@ -637,7 +461,12 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
 
     @media (max-width: 720px) {
         .evento {
-            grid-template-columns: 4rem 1fr;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0.75rem;
+        }
+
+        .evento-enlace {
+            grid-template-columns: 4rem minmax(0, 1fr);
             gap: 1rem;
         }
 
