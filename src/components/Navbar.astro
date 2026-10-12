@@ -10,7 +10,9 @@ const enlaces = [
 
 <header class="navbar" data-navbar>
     <nav class="navbar-barra" aria-label="Principal">
-        <a href="#inicio" class="navbar-logo">Logo</a>
+        <a href="/" class="navbar-logo" aria-label="Car Meet SV, inicio">
+            <img src="/images/Logo.webp" alt="Car Meet SV" />
+        </a>
 
         <button
             class="navbar-toggle"
@@ -65,9 +67,19 @@ const enlaces = [
     }
 
     .navbar-logo {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
         color: inherit;
         text-decoration: none;
         font-weight: 600;
+
+        img {
+            display: block;
+            width: auto;
+            height: 2.75rem;
+            object-fit: contain;
+        }
     }
 
     .navbar-toggle {

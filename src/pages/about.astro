@@ -27,8 +27,8 @@ const info = {
             </div>
             <img
                 class="info-imagen"
-                src="/images/hero-image.webp"
-                alt="Vista aérea de una pista con autos en movimiento"
+                src="/images/Logo-extend.webp"
+                alt="Logo de Car Meet SV"
                 loading="lazy"
             />
         </article>
@@ -104,11 +104,9 @@ const info = {
 
     .info-imagen {
         width: 100%;
-        aspect-ratio: 16 / 10;
-        object-fit: cover;
-        border: 1px solid rgb(247 240 236 / 0.12);
-        border-radius: 12px;
-        filter: saturate(0.85) brightness(0.95);
+        height: auto;
+        max-height: 20rem;
+        object-fit: contain;
     }
 
     .importante,
