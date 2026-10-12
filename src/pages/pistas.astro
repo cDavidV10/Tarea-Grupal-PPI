@@ -227,18 +227,41 @@ const pistas: Pista[] = [
         return caja;
     }
 
+    // La ventana nunca debe ser más grande que el mapa: se adapta a su ancho y
+    // alto, y si el contenido no cabe, se desplaza por dentro.
+    function medidasPopup() {
+        const { x, y } = mapa.getSize();
+        const ancho = Math.max(220, Math.min(360, x - 32));
+        return {
+            maxWidth: ancho,
+            minWidth: Math.min(300, ancho),
+            maxHeight: Math.max(240, y - 56),
+        };
+    }
+
     const marcadores = pistas.map((p) =>
         L.marker([p.lat, p.lng], { icon: icono, title: p.nombre })
             .addTo(mapa)
             .bindPopup(crearPopup(p), {
-                maxWidth: 360,
-                minWidth: 300,
+                ...medidasPopup(),
                 closeButton: false,
                 className: "popup-pista",
-                autoPanPaddingTopLeft: [24, 24],
-                autoPanPaddingBottomRight: [24, 24],
+                autoPanPaddingTopLeft: [16, 16],
+                autoPanPaddingBottomRight: [16, 16],
             }),
     );
+
+    function ajustarPopups() {
+        const medidas = medidasPopup();
+        marcadores.forEach((m) => {
+            const popup = m.getPopup();
+            if (!popup) return;
+            Object.assign(popup.options, medidas);
+            if (popup.isOpen()) popup.update();
+        });
+    }
+
+    window.addEventListener("resize", ajustarPopups);
 
     mapa.fitBounds(L.latLngBounds(pistas.map((p) => [p.lat, p.lng] as [number, number])), {
         padding: [48, 48],
@@ -445,6 +468,12 @@ const pistas: Pista[] = [
         line-height: 1.4;
     }
 
+    /* Contenido con scroll cuando no cabe en el mapa */
+    .mapa :global(.popup-pista .leaflet-popup-scrolled) {
+        border: 0;
+        overscroll-behavior: contain;
+    }
+
     .mapa :global(.popup-media) {
         position: relative;
         height: 9.5rem;
@@ -512,6 +541,7 @@ const pistas: Pista[] = [
     .mapa :global(.popup-datos dd) {
         margin: 0;
         color: #c5b1a6;
+        overflow-wrap: anywhere;
     }
 
     .mapa :global(.popup-desc) {
@@ -549,6 +579,29 @@ const pistas: Pista[] = [
         font-size: 0.85rem;
         text-align: center;
         color: #e0342c;
+    }
+
+    @media (max-width: 720px) {
+        .mapa {
+            height: clamp(30rem, 80vh, 40rem);
+        }
+
+        .mapa :global(.popup-media) {
+            height: 7rem;
+        }
+
+        .mapa :global(.popup-cuerpo) {
+            padding: 0.9rem 1rem 1rem;
+        }
+
+        .mapa :global(.popup-cuerpo h3) {
+            font-size: 1.25rem;
+        }
+
+        .mapa :global(.popup-datos) {
+            gap: 0.3rem 0.75rem;
+            font-size: 0.85rem;
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {
