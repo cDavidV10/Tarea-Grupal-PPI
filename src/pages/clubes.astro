@@ -233,22 +233,20 @@ const estilos = [...new Set(clubes.map((club) => club.categoria))].sort((a, b) =
 
     .imagen-contenedor {
         position: relative;
+        display: grid;
         overflow: hidden;
         aspect-ratio: 16 / 10;
-        background: var(--cape-storm, #3c4755);
+        place-items: center;
+        background: #171314;
     }
 
     .imagen-contenedor > img {
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: cover;
-        transition: transform 0.35s ease;
-    }
-
-    .perfil-enlace:hover .imagen-contenedor > img,
-    .perfil-enlace:focus-visible .imagen-contenedor > img {
-        transform: scale(1.04);
+        padding: 0.5rem;
+        object-fit: contain;
+        object-position: center;
     }
 
     .etiquetas {
@@ -397,7 +395,6 @@ const estilos = [...new Set(clubes.map((club) => club.categoria))].sort((a, b) =
 
     @media (prefers-reduced-motion: reduce) {
         .perfil-enlace,
-        .imagen-contenedor > img,
         .mas-info svg,
         .ver-mas {
             transition: none;

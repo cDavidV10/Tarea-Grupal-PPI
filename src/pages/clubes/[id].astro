@@ -118,8 +118,10 @@ function redSocial(
         width: 100%;
         height: 100%;
         min-height: 24rem;
-        object-fit: cover;
-        background: var(--cape-storm, #3c4755);
+        padding: 1rem;
+        object-fit: contain;
+        object-position: center;
+        background: #171314;
     }
 
     .contenido-perfil {
@@ -250,9 +252,8 @@ function redSocial(
         }
 
         .portada-perfil {
-            height: auto;
+            height: clamp(14rem, 70vw, 32rem);
             min-height: 0;
-            aspect-ratio: 4 / 3;
         }
 
         .contenido-perfil {

@@ -59,7 +59,6 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
                 {eventos.map((e) => {
                     const d = e.fecha ? new Date(`${e.fecha}T12:00:00`) : null;
                     const [a, b] = colores[e.tipo] ?? ["#3c4755", "#211718"];
-                    const fondo = e.img ? `--img:url('/images/eventos/${e.img}');` : "";
                     return (
                         <li
                             class="evento"
@@ -91,7 +90,16 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
                                         <span>{e.horaCorta}</span>
                                     </div>
                                 )}
-                                <div class="miniatura" style={`${fondo}--a:${a};--b:${b}`}></div>
+                                <div class="miniatura" style={`--a:${a};--b:${b}`}>
+                                    {e.img && (
+                                        <img
+                                            src={`/images/eventos/${e.img}`}
+                                            alt=""
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    )}
+                                </div>
                                 <div class="info">
                                     <span class="tipo">{e.frecuencia ? `${e.tipo} · ${e.frecuencia}` : e.tipo}</span>
                                     <h3>{e.nombre}</h3>
@@ -366,13 +374,22 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
     }
 
     .miniatura {
+        display: grid;
         width: 7rem;
         aspect-ratio: 1;
+        place-items: center;
+        overflow: hidden;
         border: 1px solid rgb(247 240 236 / 0.12);
         border-radius: 8px;
-        background:
-            var(--img, linear-gradient(transparent, transparent)) center / cover,
-            linear-gradient(145deg, var(--a), var(--b));
+        background: linear-gradient(145deg, var(--a), var(--b));
+    }
+
+    .miniatura img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
     }
 
     .tipo {
@@ -466,12 +483,13 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
         }
 
         .evento-enlace {
-            grid-template-columns: 4rem minmax(0, 1fr);
+            grid-template-columns: 4rem 5rem minmax(0, 1fr);
             gap: 1rem;
         }
 
         .miniatura {
-            display: none;
+            width: 5rem;
+            border-radius: 6px;
         }
 
         .mas-info {
