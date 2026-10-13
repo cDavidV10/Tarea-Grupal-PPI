@@ -69,7 +69,7 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
                         >
                             <a
                                 class="evento-enlace"
-                                href={`/${slugEvento(e.nombre)}`}
+                                href={`/eventos/${slugEvento(e.nombre)}`}
                                 aria-label={`Ver detalles de ${e.nombre}`}
                             >
                                 {d ? (
@@ -98,7 +98,7 @@ const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoP
                                     <p class="detalles">{detalles(e)}</p>
                                 </div>
                             </a>
-                            <a class="mas-info" href={`/${slugEvento(e.nombre)}`}>
+                            <a class="mas-info" href={`/eventos/${slugEvento(e.nombre)}`}>
                                 Más información
                             </a>
                         </li>

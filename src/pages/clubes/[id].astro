@@ -1,0 +1,269 @@
+---
+import Layout from "../../layout/Layout.astro";
+import SocialIcon from "../../components/SocialIcon.astro";
+import { clubes } from "../../data/clubes";
+
+export function getStaticPaths() {
+    return clubes.map((club) => ({
+        params: { id: club.id },
+        props: { club },
+    }));
+}
+
+const { club } = Astro.props;
+
+function redSocial(
+    nombre: string,
+): "Facebook" | "Instagram" | "X" | "TikTok" | "Threads" | undefined {
+    if (/facebook/i.test(nombre)) return "Facebook";
+    if (/instagram/i.test(nombre)) return "Instagram";
+    if (/^(x|twitter)(\s|$|\()/i.test(nombre)) return "X";
+    if (/tiktok/i.test(nombre)) return "TikTok";
+    if (/threads/i.test(nombre)) return "Threads";
+    return undefined;
+}
+---
+
+<Layout
+    title={`${club.nombre} | Car Meet SV`}
+    description={club.descripcion}
+    image={club.imagen}
+    keywords={`${club.nombre}, ${club.tipo}, ${club.categoria}, cultura automotriz, El Salvador`}
+>
+    <section class="detalle-contenedor" aria-label={`Perfil de ${club.nombre}`}>
+        <article class="detalle-perfil">
+            <img class="portada-perfil" src={club.imagen} alt={`Imagen de ${club.nombre}`} />
+
+            <div class="contenido-perfil">
+                <a class="volver" href="/clubes" aria-label="Volver a clubes y páginas">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M15 18l-6-6 6-6" />
+                        <path d="M9 12h12" />
+                    </svg>
+                </a>
+
+                <div class="etiquetas">
+                    <span class:list={["tipo", { pagina: club.tipo === "Página" }]}>{club.tipo}</span>
+                    <span class="categoria">{club.categoria}</span>
+                </div>
+                <h1>{club.nombre}</h1>
+                <p class="descripcion">{club.descripcion}</p>
+
+                {club.requisitos && (
+                    <section class="informacion">
+                        <h2>Requisitos</h2>
+                        <p>{club.requisitos}</p>
+                    </section>
+                )}
+
+                {club.contacto && (
+                    <section class="informacion">
+                        <h2>Contacto</h2>
+                        <p>{club.contacto}</p>
+                    </section>
+                )}
+
+                {club.enlaces.length > 0 && (
+                    <nav class="enlaces" aria-label={`Enlaces de ${club.nombre}`}>
+                        {club.enlaces.map((enlace) => {
+                            const plataforma = redSocial(enlace.nombre);
+                            return (
+                                <a
+                                    href={enlace.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`${enlace.nombre} de ${club.nombre}`}
+                                >
+                                    {plataforma && <SocialIcon platform={plataforma} />}
+                                    {enlace.nombre}
+                                </a>
+                            );
+                        })}
+                    </nav>
+                )}
+            </div>
+        </article>
+    </section>
+</Layout>
+
+<style>
+    .detalle-contenedor {
+        max-width: 76rem;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+    }
+
+    .detalle-perfil {
+        display: grid;
+        grid-template-columns: minmax(16rem, 0.85fr) minmax(0, 1.15fr);
+        min-height: 24rem;
+        overflow: hidden;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 12px;
+        background: var(--kala-black, #211718);
+        color: var(--vintage-charm, #f7f0ec);
+    }
+
+    .portada-perfil {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 24rem;
+        object-fit: cover;
+        background: var(--cape-storm, #3c4755);
+    }
+
+    .contenido-perfil {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 3rem clamp(1.5rem, 4vw, 3.5rem);
+    }
+
+    .volver {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        place-items: center;
+        border-radius: 50%;
+        color: inherit;
+        transition: background-color 0.2s ease;
+    }
+
+    .volver:hover,
+    .volver:focus-visible {
+        background: rgb(247 240 236 / 0.12);
+    }
+
+    .volver svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+
+    .etiquetas {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.65rem;
+        padding-right: 3rem;
+    }
+
+    .tipo {
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        background: var(--all-systems-red, #b00303);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .tipo.pagina {
+        background: var(--space-convoy, #637687);
+    }
+
+    .categoria {
+        color: var(--vintage-charm-medio, #c5b1a6);
+        font-size: 0.9rem;
+    }
+
+    h1 {
+        margin-top: 0.8rem;
+        font-size: clamp(1.8rem, 4vw, 2.7rem);
+        line-height: 1.1;
+    }
+
+    .descripcion,
+    .informacion p {
+        margin-top: 1rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+        line-height: 1.7;
+    }
+
+    .informacion {
+        margin-top: 1.25rem;
+    }
+
+    .informacion h2 {
+        font-size: 1rem;
+    }
+
+    .informacion p {
+        margin-top: 0.25rem;
+    }
+
+    .enlaces {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+        margin-top: 1.5rem;
+    }
+
+    .enlaces a {
+        display: inline-flex;
+        min-height: 2.6rem;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.55rem 1rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 4px;
+        color: inherit;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .enlaces svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex: 0 0 auto;
+    }
+
+    .enlaces a:hover,
+    .enlaces a:focus-visible {
+        border-color: var(--all-systems-red, #b00303);
+        background: var(--all-systems-red, #b00303);
+    }
+
+    @media (max-width: 720px) {
+        .detalle-contenedor {
+            padding: 1.5rem 1rem 3rem;
+        }
+
+        .detalle-perfil {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        .portada-perfil {
+            height: auto;
+            min-height: 0;
+            aspect-ratio: 4 / 3;
+        }
+
+        .contenido-perfil {
+            padding: 2rem 1.5rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .volver,
+        .enlaces a {
+            transition: none;
+        }
+    }
+</style>

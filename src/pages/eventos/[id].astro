@@ -1,11 +1,11 @@
 ---
-import Layout from "../layout/Layout.astro";
+import Layout from "../../layout/Layout.astro";
 import {
     eventos,
     slugEvento,
     textoPrecio,
     type Evento,
-} from "../data/eventos";
+} from "../../data/eventos";
 
 export function getStaticPaths() {
     const archivosDescripciones = import.meta.glob<string>(
