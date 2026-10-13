@@ -98,36 +98,6 @@ import Layout from "../layout/Layout.astro";
         box-shadow: 0 0 0 0.015em #252b31;
     }
 
-    .wheel::before {
-        position: absolute;
-        right: -0.11em;
-        bottom: 0.13em;
-        width: 0.2em;
-        height: 0.065em;
-        border: 0.012em solid #aeb8bf;
-        border-radius: 0 0.03em 0.03em 0;
-        background: linear-gradient(#69747d, #252b31);
-        content: "";
-        transform: rotate(18deg);
-    }
-
-    .wheel::after {
-        position: absolute;
-        right: -0.15em;
-        bottom: 0.19em;
-        width: 0.13em;
-        height: 0.13em;
-        border-radius: 50%;
-        background: rgb(210 218 222 / 0.42);
-        box-shadow:
-            0.07em -0.1em 0 0.025em rgb(210 218 222 / 0.3),
-            0.17em -0.17em 0 0.045em rgb(210 218 222 / 0.2),
-            0.27em -0.21em 0 0.06em rgb(210 218 222 / 0.12);
-        content: "";
-        filter: blur(0.025em);
-        animation: exhaust-smoke 2.4s ease-out infinite;
-    }
-
     .eyebrow {
         margin-top: 1.5rem;
         color: #e0342c;
@@ -199,22 +169,6 @@ import Layout from "../layout/Layout.astro";
         }
     }
 
-    @keyframes exhaust-smoke {
-        0% {
-            opacity: 0;
-            transform: translate(0, 0) scale(0.65);
-        }
-
-        20% {
-            opacity: 0.7;
-        }
-
-        100% {
-            opacity: 0;
-            transform: translate(0.25em, -0.2em) scale(1.25);
-        }
-    }
-
     @media (max-width: 480px) {
         .acciones {
             flex-direction: column;
@@ -226,8 +180,7 @@ import Layout from "../layout/Layout.astro";
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .wheel,
-        .wheel::after {
+        .wheel {
             animation: none;
         }
 
