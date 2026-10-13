@@ -14,12 +14,22 @@ const { club } = Astro.props;
 
 function redSocial(
     nombre: string,
-): "Facebook" | "Instagram" | "X" | "TikTok" | "Threads" | undefined {
+):
+    | "Facebook"
+    | "Instagram"
+    | "X"
+    | "TikTok"
+    | "Threads"
+    | "YouTube"
+    | "Sitio web"
+    | undefined {
     if (/facebook/i.test(nombre)) return "Facebook";
     if (/instagram/i.test(nombre)) return "Instagram";
     if (/^(x|twitter)(\s|$|\()/i.test(nombre)) return "X";
     if (/tiktok/i.test(nombre)) return "TikTok";
     if (/threads/i.test(nombre)) return "Threads";
+    if (/youtube/i.test(nombre)) return "YouTube";
+    if (/sitio web|website/i.test(nombre)) return "Sitio web";
     return undefined;
 }
 ---
