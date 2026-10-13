@@ -17,7 +17,7 @@ export interface PerfilClub {
 
 const imagenes: Record<string, string> = {
     "F7LTHY": "f7lthy",
-    "cultura-motorsv": "cultura-motor",
+    "cultura-motorsv": "cultura-motorsv",
     "element-car": "element-car",
     "kings-dream": "kings-dream",
     koreansv: "koreansv",
@@ -52,7 +52,7 @@ function extraerPerfil(id: string, contenido: string): PerfilClub {
             continue;
         }
 
-        const campo = /^(Nombre del club|Nombre de la página|Etiqueta\/Categoría|Descripción|Requisitos|Contacto):\s*(.*)$/i.exec(texto);
+        const campo = /^(Nombre del club|Nombre de la página|Etiqueta\/Categoría|Categoría|Descripción|Requisitos|Contacto):\s*(.*)$/i.exec(texto);
         if (campo) {
             campoActual = campo[1].toLowerCase();
             campos[campoActual] = campo[2];
@@ -70,7 +70,7 @@ function extraerPerfil(id: string, contenido: string): PerfilClub {
     }
 
     const nombre = campos["nombre del club"] || campos["nombre de la página"];
-    const categoria = campos["etiqueta/categoría"];
+    const categoria = campos["etiqueta/categoría"] || campos["categoría"];
     const descripcion = campos["descripción"];
     const imagen = imagenes[id];
 
