@@ -125,7 +125,7 @@ const estilos = [...new Set(clubes.map((club) => club.categoria))].sort((a, b) =
 
 <style>
     .encabezado {
-        padding-top: 0.75rem;
+        padding-top: calc(4rem + 0.75rem);
     }
 
     .migas {
@@ -403,10 +403,6 @@ const estilos = [...new Set(clubes.map((club) => club.categoria))].sort((a, b) =
     }
 
     @media (max-width: 520px) {
-        .encabezado {
-            padding-top: 0.5rem;
-        }
-
         .migas {
             padding-inline: 1rem;
         }
