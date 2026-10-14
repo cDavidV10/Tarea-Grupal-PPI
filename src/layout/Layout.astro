@@ -11,6 +11,7 @@ interface Props {
 }
 
 const { title, description, image, keywords } = Astro.props;
+const tituloPagina = title.endsWith(" - PPI") ? title : `${title} - PPI`;
 const defaultKeywords =
     "Car Meet SV, eventos de autos, comunidad automotriz, tuning, carros El Salvador, clubes automotrices, reuniones de autos, cultura automotriz, pistas, autos clásicos, autos deportivos";
 
@@ -44,6 +45,10 @@ const tieneHero = Astro.slots.has("hero");
         <meta name="robots" content="index, follow" />
         <meta name="googlebot" content="index, follow" />
         <meta name="author" content="Car Meet SV" />
+        <meta name="institution" content="Universidad de El Salvador" />
+        <meta name="school" content="Escuela de Ingeniería" />
+        <meta name="program" content="Ingeniería de Sistemas Informáticos" />
+        <meta name="course" content="Programación Para Internet (PPI)" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -58,8 +63,8 @@ const tieneHero = Astro.slots.has("hero");
 
         {canonicalURL && <link rel="canonical" href={canonicalURL} />}
 
-        <title>{title}</title>
-        <meta name="title" content={title} />
+        <title>{tituloPagina}</title>
+        <meta name="title" content={tituloPagina} />
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords ?? defaultKeywords} />
 
@@ -67,13 +72,13 @@ const tieneHero = Astro.slots.has("hero");
         <meta property="og:locale" content="es_SV" />
         <meta property="og:site_name" content="Car Meet SV" />
         <meta property="og:url" content={pageURL} />
-        <meta property="og:title" content={title} />
+        <meta property="og:title" content={tituloPagina} />
         <meta property="og:description" content={description} />
         {imagenURL && <meta property="og:image" content={imagenURL} />}
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={pageURL} />
-        <meta name="twitter:title" content={title} />
+        <meta name="twitter:title" content={tituloPagina} />
         <meta name="twitter:description" content={description} />
         {imagenURL && <meta name="twitter:image" content={imagenURL} />}
     </head>
