@@ -31,7 +31,7 @@ export const eventos: Evento[] = [
   },
   {
     fecha: "2026-10-17",
-    tipo: "Car Meet",
+    tipo: "Car Meeting",
     nombre: "Racemania Meet Weekend",
     img: "racemania-meet-weekend.webp",
     lugar: "Autódromo Internacional El Jabalí, La Libertad",
@@ -66,8 +66,8 @@ export const eventos: Evento[] = [
   },
   {
     fecha: "2026-10-24",
-    tipo: "Car Meet",
-    nombre: "Car Meet Formando Sonrisas 2026",
+    tipo: "Car Meeting",
+    nombre: "Car Meeting Formando Sonrisas 2026",
     img: "car-meet-formando-sonrisas.webp",
     lugar: "Garden Mall San Miguel, San Miguel",
     hora: "3:00 p. m.",
@@ -89,7 +89,7 @@ export const eventos: Evento[] = [
   },
   {
     fecha: "2026-10-31",
-    tipo: "Car Meet",
+    tipo: "Car Meeting",
     nombre: "Teyo Horror Night",
     img: "Teyo_Night.webp",
     lugar: "Teyo Detailing Studio, San Miguel",

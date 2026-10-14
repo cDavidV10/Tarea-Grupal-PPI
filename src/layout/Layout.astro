@@ -13,7 +13,7 @@ interface Props {
 const { title, description, image, keywords } = Astro.props;
 const tituloPagina = title.endsWith(" - PPI") ? title : `${title} - PPI115 - 2026`;
 const defaultKeywords =
-    "Car Meet SV, eventos de autos, comunidad automotriz, tuning, carros El Salvador, clubes automotrices, reuniones de autos, cultura automotriz, pistas, autos clásicos, autos deportivos";
+    "Car Meeting SV, eventos de autos, comunidad automotriz, tuning, carros El Salvador, clubes automotrices, reuniones de autos, cultura automotriz, pistas, autos clásicos, autos deportivos";
 
 const pageImageMap: Record<string, string> = {
     "/": "/images/hero-image.webp",
@@ -44,7 +44,7 @@ const tieneHero = Astro.slots.has("hero");
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="index, follow" />
         <meta name="googlebot" content="index, follow" />
-        <meta name="author" content="Car Meet SV" />
+        <meta name="author" content="Car Meeting SV" />
         <meta name="institution" content="Universidad de El Salvador" />
         <meta name="school" content="Escuela de Ingeniería" />
         <meta name="program" content="Ingeniería de Sistemas Informáticos" />
@@ -70,7 +70,7 @@ const tieneHero = Astro.slots.has("hero");
 
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="es_SV" />
-        <meta property="og:site_name" content="Car Meet SV" />
+        <meta property="og:site_name" content="Car Meeting SV" />
         <meta property="og:url" content={pageURL} />
         <meta property="og:title" content={tituloPagina} />
         <meta property="og:description" content={description} />

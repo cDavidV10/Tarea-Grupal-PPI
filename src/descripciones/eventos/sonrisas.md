@@ -1,6 +1,6 @@
-Categoría: Car Meet / Evento benéfico
+Categoría: Car Meeting / Evento benéfico
 
-Nombre: Car Meet Formando Sonrisas 2026
+Nombre: Car Meeting Formando Sonrisas 2026
 
 Fecha: Sábado 24 de octubre de 2026
 
