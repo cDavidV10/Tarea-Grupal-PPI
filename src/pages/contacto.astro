@@ -1,0 +1,375 @@
+---
+import Layout from "../layout/Layout.astro";
+
+const correo = "carmeetingsv@gmail.com";
+
+const redes = [
+    {
+        nombre: "Facebook",
+        href: "https://www.facebook.com/profile.php?id=61595062413959",
+        trazos: ["M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3"],
+    },
+    {
+        nombre: "Instagram",
+        href: "https://www.instagram.com/carmeetingsv/",
+        trazos: [
+            "M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4l0 -10",
+            "M8.5 12a3.5 3.5 0 1 0 7 0a3.5 3.5 0 0 0 -7 0",
+            "M17 7v.01",
+        ],
+    },
+    {
+        nombre: "X",
+        href: "https://x.com/CarMeetingSV",
+        trazos: [
+            "M4 4l11.733 16h4.267l-11.733 -16l-4.267 0",
+            "M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772",
+        ],
+    },
+];
+---
+
+<Layout
+    title="Contacto | Car Meeting SV"
+    description="¿Tienes un evento, club o pista que debamos incluir? Escríbenos."
+    image="/images/portadas/parking.webp"
+>
+    <section slot="hero" class="portada">
+        <div class="portada-contenido">
+            <div class="portada-caja">
+                <h1>Contacto</h1>
+                <p>¿Tienes un evento, club o pista que debamos incluir? Escríbenos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="contacto">
+        <div class="contenedor">
+            <div class="tarjeta">
+                <h2>Envíanos un mensaje</h2>
+                <form id="contacto-form" data-correo={correo}>
+                    <label>
+                        <span>Nombre</span>
+                        <input type="text" name="nombre" placeholder="Tu nombre" autocomplete="name" required />
+                    </label>
+                    <label>
+                        <span>Correo electrónico</span>
+                        <input
+                            type="email"
+                            name="correo"
+                            placeholder="tucorreo@ejemplo.com"
+                            autocomplete="email"
+                            required
+                        />
+                    </label>
+                    <label>
+                        <span>Motivo</span>
+                        <input type="text" name="motivo" placeholder="Sugerir un evento" required />
+                    </label>
+                    <label>
+                        <span>Mensaje</span>
+                        <textarea name="mensaje" rows="5" placeholder="Escribe tu mensaje" required></textarea>
+                    </label>
+                    <button type="submit" class="enviar">Enviar mensaje</button>
+                    <p class="estado" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+
+            <aside class="tarjeta">
+                <h2>Otras formas de contactarnos</h2>
+                <p class="correo">
+                    <b>Correo: </b>
+                    <a href={`mailto:${correo}`}>{correo}</a>
+                </p>
+                <ul class="redes">
+                    {
+                        redes.map((r) => (
+                            <li>
+                                <a href={r.href} target="_blank" rel="noopener noreferrer">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        {r.trazos.map((d) => (
+                                            <path d={d} />
+                                        ))}
+                                    </svg>
+                                    {r.nombre}
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </aside>
+        </div>
+    </section>
+</Layout>
+
+<script>
+    const form = document.querySelector<HTMLFormElement>("#contacto-form")!;
+    const estado = document.querySelector<HTMLElement>(".estado")!;
+    const boton = form.querySelector<HTMLButtonElement>(
+        'button[type="submit"]'
+    )!;
+
+    const URL_APPS_SCRIPT =
+  "https://script.google.com/macros/s/AKfycbx0nLzcLx8qwBL5Q3w_wxnJ-HncM5JaXmLvSp1XmkT7hfA72P6groaOXUxkmvuUMrlQLA/exec";
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!form.reportValidity()) return;
+
+        const datos = new FormData(form);
+
+        const respuesta = {
+            nombre: String(datos.get("nombre") || "").trim(),
+            correo: String(datos.get("correo") || "").trim(),
+            motivo: String(datos.get("motivo") || "").trim(),
+            mensaje: String(datos.get("mensaje") || "").trim()
+        };
+
+        boton.disabled = true;
+        estado.textContent = "Enviando mensaje...";
+
+        try {
+            await fetch(URL_APPS_SCRIPT, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(respuesta)
+            });
+
+            estado.textContent =
+                "¡Respuesta registrada!";
+
+            form.reset();
+
+        } catch (error) {
+            console.error("Error al enviar el formulario:", error);
+
+            estado.textContent =
+                "No se pudo enviar el mensaje. Inténtalo nuevamente.";
+        } finally {
+            boton.disabled = false;
+        }
+    });
+</script>
+
+<style>
+    .portada {
+        display: flex;
+        align-items: center;
+        min-height: 22rem;
+        padding: calc(4rem + 1px + 3rem) 1.5rem 3rem;
+        background:
+            linear-gradient(90deg, rgb(33 23 24 / 0.85), rgb(33 23 24 / 0.35)),
+            url("/images/portadas/parking.webp") center / cover,
+            linear-gradient(145deg, #3c4755, #211718);
+        border-bottom: 4px solid;
+        border-image: linear-gradient(
+                90deg,
+                var(--all-systems-red, #b00303),
+                var(--space-convoy, #637687),
+                var(--vintage-charm-medio, #c5b1a6)
+            )
+            1;
+    }
+
+    .portada-contenido {
+        width: 100%;
+        max-width: 64rem;
+        margin: 0 auto;
+    }
+
+    .portada-caja {
+        display: inline-block;
+        max-width: 28rem;
+        padding: 1.5rem 2rem;
+        border: 1px solid rgb(247 240 236 / 0.15);
+        border-radius: 12px;
+        background-color: rgb(33 23 24 / 0.78);
+        backdrop-filter: blur(6px);
+    }
+
+    .portada h1 {
+        margin-bottom: 0.25rem;
+        font-size: clamp(2.25rem, 6vw, 3.5rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+    }
+
+    .portada p {
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .contenedor {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 2rem;
+        align-items: start;
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .tarjeta {
+        position: relative;
+        padding: 2rem 1.75rem 1.75rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 8px;
+        background-color: rgb(247 240 236 / 0.04);
+    }
+
+    .tarjeta::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 1.75rem;
+        width: 4rem;
+        height: 4px;
+        background-color: var(--all-systems-red, #b00303);
+    }
+
+    .tarjeta h2 {
+        margin-bottom: 1.25rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    form {
+        display: grid;
+        gap: 1.1rem;
+    }
+
+    label {
+        display: grid;
+        gap: 0.4rem;
+    }
+
+    label span {
+        font-weight: 500;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border: 1px solid rgb(247 240 236 / 0.2);
+        border-radius: 6px;
+        background-color: var(--cape-storm, #3c4755);
+        color: var(--vintage-charm, #f7f0ec);
+        font: inherit;
+        color-scheme: dark;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--vintage-charm-medio, #c5b1a6);
+        opacity: 0.8;
+    }
+
+    input:focus-visible,
+    textarea:focus-visible {
+        outline: 2px solid var(--all-systems-red, #b00303);
+        outline-offset: 2px;
+    }
+
+    .enviar {
+        justify-self: start;
+        padding: 0.7rem 1.5rem;
+        border: 2px solid var(--all-systems-red, #b00303);
+        border-radius: 4px;
+        background-color: var(--all-systems-red, #b00303);
+        color: #fff;
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .enviar:hover {
+        background-color: transparent;
+    }
+
+    .estado {
+        min-height: 1.25rem;
+        font-size: 0.95rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .correo {
+        margin-bottom: 1.25rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+        overflow-wrap: anywhere;
+    }
+
+    .correo b {
+        color: var(--vintage-charm, #f7f0ec);
+        font-weight: 500;
+    }
+
+    .correo a {
+        color: inherit;
+    }
+
+    .redes {
+        display: grid;
+        gap: 0.75rem;
+        justify-items: start;
+        list-style: none;
+    }
+
+    .redes a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        min-width: 9rem;
+        padding: 0.6rem 1.25rem;
+        border: 2px solid var(--space-convoy, #637687);
+        border-radius: 4px;
+        color: inherit;
+        font-weight: 500;
+        text-decoration: none;
+        transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .redes a:hover {
+        border-color: var(--all-systems-red, #b00303);
+        background-color: var(--all-systems-red, #b00303);
+    }
+
+    .redes svg {
+        flex-shrink: 0;
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    @media (max-width: 720px) {
+        .contenedor {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .enviar,
+        .redes a {
+            transition: none;
+        }
+    }
+</style>
