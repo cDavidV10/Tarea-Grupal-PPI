@@ -160,6 +160,15 @@ const redes = [
         } finally {
             boton.disabled = false;
         }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const datos = new FormData(form);
+        const asunto = String(datos.get("motivo"));
+        const cuerpo = `Nombre: ${datos.get("nombre")}\nCorreo: ${datos.get("correo")}\n\n${datos.get("mensaje")}`;
+
+        window.location.href = `mailto:${form.dataset.correo}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+        estado.textContent = "Se abrirá tu aplicación de correo para enviar el mensaje.";
     });
 </script>
 

@@ -1,0 +1,144 @@
+---
+import SocialIcon from "./SocialIcon.astro";
+
+const anio = new Date().getFullYear();
+
+const redes = [
+    {
+        nombre: "Facebook",
+        href: "https://www.facebook.com/profile.php?id=61595062413959",
+    },
+    {
+        nombre: "Instagram",
+        href: "https://www.instagram.com/carmeetingsv/",
+    },
+    {
+        nombre: "X",
+        href: "https://x.com/CarMeetingSV",
+    },
+] as const;
+---
+
+<footer class="footer">
+    <section class="footer-contenido">
+        <article class="izquierda">
+            <a class="logo-footer" href="/" aria-label="Car Meeting SV, inicio">
+                <img src="/images/Logo.webp" alt="Car Meeting SV" loading="lazy" />
+            </a>
+            <span class="copy">© {anio} Car Meeting SV</span>
+            <span class="lema">Donde se vive la cultura del motor</span>
+        </article>
+
+        <ul class="redes" aria-label="Redes sociales">
+            {redes.map(({ nombre, href }) => (
+                <li>
+                    <a
+                        href={href}
+                        aria-label={nombre}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <SocialIcon platform={nombre} />
+                    </a>
+                </li>
+            ))}
+        </ul>
+    </section>
+</footer>
+
+<style>
+    .footer {
+        width: 100%;
+        background-color: var(--kala-black);
+        border-top: 1px solid var(--space-convoy);
+        color: var(--vintage-charm);
+    }
+
+    .footer-contenido {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 2.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .izquierda {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    .logo-footer {
+        display: inline-flex;
+        align-items: center;
+
+        img {
+            display: block;
+            width: auto;
+            height: 2.5rem;
+            object-fit: contain;
+        }
+    }
+
+    .copy,
+    .lema {
+        font-size: 0.95rem;
+    }
+
+    .lema {
+        color: var(--vintage-charm);
+    }
+
+    .redes {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+         a {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            color: inherit;
+            transition:
+                color 0.2s ease,
+                transform 0.2s ease;
+
+             &:hover {
+                color: var(--vintage-charm);
+                transform: translateY(-2px);
+             }
+        }
+
+        svg {
+            width: 26px;
+            height: 26px;
+        }
+    }
+
+
+    @media (max-width: 720px) {
+        .footer-contenido {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .izquierda {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .redes a {
+            transition: none;
+        }
+    }
+</style>

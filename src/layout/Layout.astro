@@ -1,0 +1,103 @@
+---
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import "../../public/styles/global.css";
+
+interface Props {
+    title: string;
+    description: string;
+    image?: string;
+    keywords?: string;
+}
+
+const { title, description, image, keywords } = Astro.props;
+const tituloPagina = title.endsWith(" - PPI") ? title : `${title} - PPI115 - 2026`;
+const defaultKeywords =
+    "Car Meeting SV, eventos de autos, comunidad automotriz, tuning, carros El Salvador, clubes automotrices, reuniones de autos, cultura automotriz, pistas, autos clásicos, autos deportivos";
+
+const pageImageMap: Record<string, string> = {
+    "/": "/images/hero-image.webp",
+    "/index": "/images/hero-image.webp",
+    "/eventos": "/images/eventos/noche-de-echadas.webp",
+    "/clubes": "/images/portadas/clubes.webp",
+    "/pistas": "/images/portadas/pista.webp",
+    "/about": "/images/portadas/clubes.webp",
+    "/contacto": "/images/portadas/parking.webp",
+};
+
+const resolvedImage = image ?? pageImageMap[Astro.url.pathname] ?? "/images/hero-image.webp";
+const canonicalURL = Astro.site
+    ? new URL(Astro.url.pathname, Astro.site)
+    : undefined;
+const pageURL = canonicalURL ?? Astro.url;
+const imagenURL = resolvedImage ? new URL(resolvedImage, Astro.url) : undefined;
+const tieneHero = Astro.slots.has("hero");
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/images/logo-48x48.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/images/logo-192x192.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="author" content="Car Meeting SV" />
+        <meta name="institution" content="Universidad de El Salvador" />
+        <meta name="school" content="Escuela de Ingeniería" />
+        <meta name="program" content="Ingeniería de Sistemas Informáticos" />
+        <meta name="course" content="Programación Para Internet (PPI)" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet"
+        />
+
+        <meta
+            name="google-site-verification"
+            content="eJAMsc3WCL8ZZO832eySoN9beijMxur3LRQV3lCjq_k"
+        />
+
+        {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+
+        <title>{tituloPagina}</title>
+        <meta name="title" content={tituloPagina} />
+        <meta name="description" content={description} />
+        <meta name="keywords" content={keywords ?? defaultKeywords} />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="es_SV" />
+        <meta property="og:site_name" content="Car Meeting SV" />
+        <meta property="og:url" content={pageURL} />
+        <meta property="og:title" content={tituloPagina} />
+        <meta property="og:description" content={description} />
+        {imagenURL && <meta property="og:image" content={imagenURL} />}
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={pageURL} />
+        <meta name="twitter:title" content={tituloPagina} />
+        <meta name="twitter:description" content={description} />
+        {imagenURL && <meta name="twitter:image" content={imagenURL} />}
+    </head>
+    <body>
+        <Navbar />
+        <main class:list={["principal", { "sin-hero": !tieneHero }]}>
+            <slot name="hero" />
+            <slot />
+        </main>
+        <Footer />
+    </body>
+</html>
+
+<style>
+    .principal {
+        flex: 1;
+    }
+
+    .principal.sin-hero {
+        padding-top: calc(4rem + 1px);
+    }
+</style>

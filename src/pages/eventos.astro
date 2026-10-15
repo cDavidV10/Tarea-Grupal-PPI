@@ -1,0 +1,507 @@
+---
+import Layout from "../layout/Layout.astro";
+import {
+    eventos,
+    slugEvento,
+    textoPrecio,
+    type Evento,
+} from "../data/eventos";
+
+const dias = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
+const meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
+
+const colores: Record<string, [string, string]> = {
+    "Car Meeting": ["#b00303", "#211718"],
+    "Car Show": ["#637687", "#3c4755"],
+    Karting: ["#3c4755", "#b00303"],
+    Resistencia: ["#211718", "#637687"],
+    Motovelocidad: ["#b00303", "#3c4755"],
+    "Noche de echadas": ["#3c4755", "#211718"],
+};
+
+const tipos = [...new Set(eventos.map((e) => e.tipo))];
+
+const detalles = (e: Evento) => [e.lugar, e.hora ?? "Hora por confirmar", textoPrecio(e)].join(" · ");
+---
+
+<Layout
+    title="Eventos de Car Meeting en El Salvador | CarMeetingSV"
+    description="Descubre eventos de Car Meeting, car shows, carreras, pistas, clubes y la cultura del motor en El Salvador. Encuentra noticias, eventos y experiencias automotrices en un solo lugar."
+    image="/images/eventos/noche-de-echadas.webp"
+    keywords="Meet, cuarto, milla, guerra, motores, noche, echadas, jabalí, pista, singüil, raceway, fecha, precio, hora, invitado, evento, car, show, exposiciones, autos, expo, carreras, offroad, JDM, KDM, track day, tuning, pista, motocicletas, vehículos, deporte, esperamos, exhibición, Car Meeting SV, CarMeetingSV, CarMeeting SV, Car Meeting SV, eventos de autos El Salvador, comunidad automotriz, tuning, autos clásicos, autos deportivos, clubes de autos, reuniones automotrices, cultura automotriz, pista, car meeting, car shows, eventos automotrices, carreras de autos, pistas de carreras El Salvador, eventos de car meeting, eventos de autos en El Salvador, reuniones de autos, escena automotriz, clubes automotrices, cultura del motor, car shows El Salvador, car meeting SV, Evento este fin de semana, Guerra de motores en el jabalí, Carreras en el autódromo El Jabalí, Ven a disfrutar con nosotros, Evento de autos en El Salvador, Cuarto de milla, Guerra de motores, Noche de echadas, Exposiciones de autos, Carreras de autos, Noche de aceleración, Próximos eventos, Pista de carreras El Jabalí, Pista de carreras Singüil, Pista de carreras El Platanar, Pista de carreras San Miguel"
+>
+    <section slot="hero" class="portada">
+        <div class="portada-contenido">
+            <div class="portada-caja">
+                <h1>Eventos</h1>
+                <p>Todos los eventos reunidos en un solo lugar</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="eventos">
+        <div class="contenedor">
+            <div class="controles">
+                <div class="pestanas" role="group" aria-label="Tipo de lista">
+                    <button type="button" data-grupo="proximos" aria-pressed="true">Próximos</button>
+                    <button type="button" data-grupo="pasados" aria-pressed="false">Pasados</button>
+                </div>
+                <label class="filtro">
+                    <span class="sr-only">Filtrar por tipo de evento</span>
+                    <select id="filtro">
+                        <option value="">Todos los eventos</option>
+                        {tipos.map((t) => <option value={t}>{t}</option>)}
+                    </select>
+                </label>
+            </div>
+
+            <ul class="lista">
+                {eventos.map((e) => {
+                    const d = e.fecha ? new Date(`${e.fecha}T12:00:00`) : null;
+                    const [a, b] = colores[e.tipo] ?? ["#3c4755", "#211718"];
+                    return (
+                        <li
+                            class="evento"
+                            data-tipo={e.tipo}
+                            data-fecha={e.fecha}
+                            data-recurrente={e.frecuencia ? "true" : undefined}
+                        >
+                            <a
+                                class="evento-enlace"
+                                href={`/eventos/${slugEvento(e.nombre)}`}
+                                aria-label={`Ver detalles de ${e.nombre}`}
+                            >
+                                {d ? (
+                                    <div class="fecha">
+                                        <span>{dias[d.getDay()]}</span>
+                                        <b>{String(d.getDate()).padStart(2, "0")}</b>
+                                        <span>{meses[d.getMonth()]} {d.getFullYear()}</span>
+                                    </div>
+                                ) : !e.frecuencia ? (
+                                    <div class="fecha">
+                                        <span>FECHA</span>
+                                        <b>—</b>
+                                        <span>POR DEFINIR</span>
+                                    </div>
+                                ) : (
+                                    <div class="fecha">
+                                        <span>SEMANAL</span>
+                                        <b>{e.dia}</b>
+                                        <span>{e.horaCorta}</span>
+                                    </div>
+                                )}
+                                <div class="miniatura" style={`--a:${a};--b:${b}`}>
+                                    {e.img && (
+                                        <img
+                                            src={`/images/eventos/${e.img}`}
+                                            alt=""
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    )}
+                                </div>
+                                <div class="info">
+                                    <span class="tipo">{e.frecuencia ? `${e.tipo} · ${e.frecuencia}` : e.tipo}</span>
+                                    <h3>{e.nombre}</h3>
+                                    <p class="detalles">{detalles(e)}</p>
+                                </div>
+                            </a>
+                            <a class="mas-info" href={`/eventos/${slugEvento(e.nombre)}`}>
+                                Más información
+                            </a>
+                        </li>
+                    );
+                })}
+                <li class="banda">
+                    <p>Donde se vive la cultura del motor</p>
+                </li>
+            </ul>
+
+            <p class="vacio" hidden></p>
+            <nav class="paginacion" aria-label="Páginas de eventos"></nav>
+        </div>
+    </section>
+</Layout>
+
+<script>
+    const filtro = document.querySelector<HTMLSelectElement>("#filtro")!;
+    const lista = document.querySelector<HTMLElement>(".lista")!;
+    const filas = [...document.querySelectorAll<HTMLElement>(".evento")];
+    const banda = document.querySelector<HTMLElement>(".banda")!;
+    const vacio = document.querySelector<HTMLElement>(".vacio")!;
+    const paginacion = document.querySelector<HTMLElement>(".paginacion")!;
+    const pestanas = [...document.querySelectorAll<HTMLButtonElement>(".pestanas button")];
+    const POR_PAGINA = 3;
+
+    const ahora = new Date();
+    const hoy = `${ahora.getFullYear()}-${String(ahora.getMonth() + 1).padStart(2, "0")}-${String(ahora.getDate()).padStart(2, "0")}`;
+
+    filas.forEach((f) => {
+        const esProximo = f.dataset.recurrente || !f.dataset.fecha || f.dataset.fecha >= hoy;
+        f.dataset.grupo = esProximo ? "proximos" : "pasados";
+    });
+
+    let grupo = "proximos";
+    let pagina = 1;
+
+    function comparar(a: HTMLElement, b: HTMLElement) {
+        const ra = Boolean(a.dataset.recurrente);
+        const rb = Boolean(b.dataset.recurrente);
+        if (ra !== rb) return ra ? -1 : 1;
+        const orden = (a.dataset.fecha || "9999-12-31").localeCompare(b.dataset.fecha || "9999-12-31");
+        return grupo === "proximos" ? orden : -orden;
+    }
+
+    function render() {
+        const tipo = filtro.value;
+        const visibles = filas
+            .filter((f) => f.dataset.grupo === grupo && (!tipo || f.dataset.tipo === tipo))
+            .sort(comparar);
+        const total = Math.max(1, Math.ceil(visibles.length / POR_PAGINA));
+        pagina = Math.min(pagina, total);
+        const actuales = visibles.slice((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA);
+
+        visibles.forEach((f) => lista.append(f));
+        filas.forEach((f) => (f.hidden = !actuales.includes(f)));
+
+        banda.hidden = actuales.length < 3;
+        if (actuales.length >= 3) actuales[1].after(banda);
+
+        vacio.hidden = visibles.length > 0;
+        vacio.textContent =
+            grupo === "proximos"
+                ? "No hay eventos próximos de este tipo por ahora."
+                : "No hay eventos pasados de este tipo.";
+
+        let botones = "";
+        if (total > 1) {
+            for (let i = 1; i <= total; i++) {
+                botones += `<button type="button" data-p="${i}" aria-label="Página ${i}" ${i === pagina ? 'aria-current="page"' : ""}>${i}</button>`;
+            }
+            if (pagina < total) {
+                botones += `<button type="button" data-p="${pagina + 1}" aria-label="Página siguiente">&gt;</button>`;
+            }
+        }
+        paginacion.innerHTML = botones;
+    }
+
+    pestanas.forEach((boton) =>
+        boton.addEventListener("click", () => {
+            grupo = boton.dataset.grupo!;
+            pagina = 1;
+            pestanas.forEach((p) => p.setAttribute("aria-pressed", String(p === boton)));
+            render();
+        }),
+    );
+
+    filtro.addEventListener("change", () => {
+        pagina = 1;
+        render();
+    });
+
+    paginacion.addEventListener("click", (e) => {
+        const boton = (e.target as HTMLElement).closest<HTMLButtonElement>("button");
+        if (!boton) return;
+        pagina = Number(boton.dataset.p);
+        render();
+        document.querySelector(".eventos")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    render();
+</script>
+
+<style>
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .portada {
+        display: flex;
+        align-items: center;
+        min-height: 22rem;
+        padding: calc(4rem + 1px + 3rem) 1.5rem 3rem;
+        background:
+            linear-gradient(90deg, rgb(33 23 24 / 0.85), rgb(33 23 24 / 0.35)),
+            url("/images/portadas/jabali.webp") center / cover;
+        border-bottom: 4px solid;
+        border-image: linear-gradient(
+                90deg,
+                var(--all-systems-red, #b00303),
+                var(--space-convoy, #637687),
+                var(--vintage-charm-medio, #c5b1a6)
+            )
+            1;
+    }
+
+    .portada-contenido {
+        width: 100%;
+        max-width: 64rem;
+        margin: 0 auto;
+    }
+
+    .portada-caja {
+        display: inline-block;
+        max-width: 28rem;
+        padding: 1.5rem 2rem;
+        border: 1px solid rgb(247 240 236 / 0.15);
+        border-radius: 12px;
+        background-color: rgb(33 23 24 / 0.78);
+        backdrop-filter: blur(6px);
+    }
+
+    .portada h1 {
+        margin-bottom: 0.25rem;
+        font-size: clamp(2.25rem, 6vw, 3.5rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+    }
+
+    .portada p {
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .eventos {
+        overflow-x: clip;
+    }
+
+    .contenedor {
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .controles {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .pestanas {
+        display: inline-flex;
+        padding: 0.25rem;
+        border: 1px solid rgb(247 240 236 / 0.2);
+        border-radius: 999px;
+    }
+
+    .pestanas button {
+        padding: 0.5rem 1.25rem;
+        border: 0;
+        border-radius: 999px;
+        background: none;
+        color: var(--vintage-charm-medio, #c5b1a6);
+        font-weight: 500;
+        cursor: pointer;
+        transition:
+            background-color 0.2s ease,
+            color 0.2s ease;
+    }
+
+    .pestanas button[aria-pressed="true"] {
+        background-color: var(--all-systems-red, #b00303);
+        color: #fff;
+    }
+
+    .filtro select {
+        width: min(100%, 18rem);
+        padding: 0.7rem 1rem;
+        border: 1px solid rgb(247 240 236 / 0.2);
+        border-radius: 6px;
+        background-color: var(--cape-storm, #3c4755);
+        color: var(--vintage-charm, #f7f0ec);
+        color-scheme: dark;
+        cursor: pointer;
+    }
+
+    .lista {
+        list-style: none;
+        border-bottom: 1px solid var(--space-convoy, #637687);
+    }
+
+    .evento {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 1.5rem;
+        align-items: center;
+        padding: 1.5rem 0;
+        border-top: 1px solid var(--space-convoy, #637687);
+    }
+
+    .evento-enlace {
+        display: grid;
+        grid-template-columns: 4.5rem 7rem minmax(0, 1fr);
+        gap: 1.5rem;
+        align-items: center;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .evento-enlace:hover .info h3,
+    .evento-enlace:focus-visible .info h3 {
+        color: var(--vintage-charm, #f7f0ec);
+        text-decoration: underline;
+        text-decoration-color: var(--all-systems-red, #b00303);
+        text-underline-offset: 0.2em;
+    }
+
+    .evento[hidden],
+    .banda[hidden] {
+        display: none;
+    }
+
+    .fecha {
+        display: grid;
+        line-height: 1.1;
+    }
+
+    .fecha span {
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .fecha b {
+        font-size: 2.25rem;
+        font-weight: 700;
+    }
+
+    .miniatura {
+        display: grid;
+        width: 7rem;
+        aspect-ratio: 1;
+        place-items: center;
+        overflow: hidden;
+        border: 1px solid rgb(247 240 236 / 0.12);
+        border-radius: 8px;
+        background: linear-gradient(145deg, var(--a), var(--b));
+    }
+
+    .miniatura img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .tipo {
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #e0342c;
+    }
+
+    .info h3 {
+        margin: 0.15rem 0 0.25rem;
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .detalles {
+        font-size: 0.95rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .mas-info {
+        padding: 0.6rem 1.25rem;
+        border: 2px solid var(--space-convoy, #637687);
+        border-radius: 4px;
+        color: inherit;
+        font-weight: 500;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .mas-info:hover {
+        border-color: var(--all-systems-red, #b00303);
+        background-color: var(--all-systems-red, #b00303);
+    }
+
+    .banda {
+        margin-inline: calc(50% - 50vw);
+        padding: 1.75rem max(1.5rem, calc((100vw - 64rem) / 2 + 1.5rem));
+        background: linear-gradient(
+            90deg,
+            var(--all-systems-red, #b00303),
+            var(--cape-storm, #3c4755)
+        );
+        color: #fff;
+        list-style: none;
+    }
+
+    .banda p {
+        font-size: clamp(1.25rem, 3vw, 1.75rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .vacio {
+        padding: 2rem 0;
+        text-align: center;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .paginacion {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .paginacion :global(button) {
+        width: 2.25rem;
+        height: 2.25rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 50%;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .paginacion :global(button[aria-current="page"]) {
+        border-color: var(--all-systems-red, #b00303);
+        background-color: var(--all-systems-red, #b00303);
+    }
+
+    @media (max-width: 720px) {
+        .evento {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0.75rem;
+        }
+
+        .evento-enlace {
+            grid-template-columns: 4rem 5rem minmax(0, 1fr);
+            gap: 1rem;
+        }
+
+        .miniatura {
+            width: 5rem;
+            border-radius: 6px;
+        }
+
+        .mas-info {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .mas-info,
+        .pestanas button {
+            transition: none;
+        }
+    }
+</style>

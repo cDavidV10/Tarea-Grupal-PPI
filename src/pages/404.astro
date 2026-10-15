@@ -1,0 +1,191 @@
+---
+import Layout from "../layout/Layout.astro";
+---
+
+<Layout
+    title="Página no encontrada | Car Meeting SV"
+    description="La página que buscas no está disponible. Regresa al inicio o explora los próximos eventos de Car Meeting SV."
+>
+    <section class="not-found" aria-labelledby="not-found-title">
+        <div class="not-found-card">
+            <div class="error-code" aria-hidden="true">
+                <span>4</span>
+                <span class="wheel">
+                    <span></span>
+                </span>
+                <span>4</span>
+            </div>
+
+            <p class="eyebrow">SALIDA EQUIVOCADA</p>
+            <h1 id="not-found-title">Esta ruta no está en el mapa</h1>
+            <p class="mensaje">
+                Puede que el enlace esté desactualizado o que la página haya cambiado de lugar.
+                Volvamos a la pista.
+            </p>
+
+            <nav class="acciones" aria-label="Opciones para continuar">
+                <a class="accion principal" href="/">Volver al inicio</a>
+                <a class="accion secundaria" href="/eventos">Explorar eventos</a>
+            </nav>
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .not-found {
+        display: grid;
+        min-height: min(72vh, 48rem);
+        place-items: center;
+        padding: 3rem 1.5rem 5rem;
+        background:
+            radial-gradient(ellipse at 50% 35%, rgb(99 118 135 / 0.18), transparent 58%),
+            var(--kala-black, #211718);
+    }
+
+    .not-found-card {
+        width: min(100%, 44rem);
+        padding: clamp(2rem, 6vw, 4rem);
+        border: 1px solid rgb(99 118 135 / 0.55);
+        border-radius: 12px;
+        background: linear-gradient(145deg, rgb(60 71 85 / 0.6), rgb(33 23 24 / 0.95));
+        box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 0.28);
+        text-align: center;
+    }
+
+    .error-code {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(0.5rem, 3vw, 1.5rem);
+        color: var(--vintage-charm, #f7f0ec);
+        font-size: clamp(6rem, 22vw, 12rem);
+        font-weight: 800;
+        line-height: 0.9;
+        letter-spacing: -0.08em;
+    }
+
+    .wheel {
+        position: relative;
+        display: grid;
+        width: 0.72em;
+        aspect-ratio: 1;
+        place-items: center;
+        border: 0.085em solid #171b20;
+        border-radius: 50%;
+        background:
+            radial-gradient(circle, #20252b 0 14%, transparent 15%),
+            repeating-conic-gradient(
+                from 0deg,
+                #aeb8bf 0deg 5deg,
+                #56616b 5deg 8deg,
+                transparent 8deg 45deg
+            ),
+            radial-gradient(circle, #87939c 0 56%, #38424b 58% 68%, #161a1e 70%);
+        box-shadow:
+            inset 0 0 0 0.025em #aeb8bf,
+            inset 0 0 0 0.075em #252b31,
+            0 0 0 0.018em rgb(247 240 236 / 0.35);
+        animation: spin 12s linear infinite;
+    }
+
+    .wheel span {
+        z-index: 1;
+        width: 0.19em;
+        aspect-ratio: 1;
+        border: 0.035em solid #d0d5d8;
+        border-radius: 50%;
+        background: radial-gradient(circle, #303940 0 42%, #9ba5ac 46% 68%, #343c43 72%);
+        box-shadow: 0 0 0 0.015em #252b31;
+    }
+
+    .eyebrow {
+        margin-top: 1.5rem;
+        color: #e0342c;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+    }
+
+    h1 {
+        margin-top: 0.6rem;
+        font-size: clamp(1.8rem, 5vw, 2.75rem);
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+    }
+
+    .mensaje {
+        max-width: 34rem;
+        margin: 1rem auto 0;
+        color: var(--vintage-charm-medio, #c5b1a6);
+        line-height: 1.7;
+    }
+
+    .acciones {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 2rem;
+    }
+
+    .accion {
+        display: inline-flex;
+        min-height: 2.9rem;
+        align-items: center;
+        justify-content: center;
+        padding: 0.65rem 1.25rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 5px;
+        color: var(--vintage-charm, #f7f0ec);
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .accion:hover {
+        transform: translateY(-2px);
+        border-color: var(--all-systems-red, #b00303);
+    }
+
+    .accion.principal {
+        border-color: var(--all-systems-red, #b00303);
+        background: var(--all-systems-red, #b00303);
+    }
+
+    .accion.principal:hover {
+        background: #8e0303;
+    }
+
+    .accion.secundaria:hover {
+        background: rgb(99 118 135 / 0.2);
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .acciones {
+            flex-direction: column;
+        }
+
+        .accion {
+            width: 100%;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .wheel {
+            animation: none;
+        }
+
+        .accion {
+            transition: none;
+        }
+    }
+</style>

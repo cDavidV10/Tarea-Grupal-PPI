@@ -1,0 +1,78 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", system-ui, sans-serif;
+}
+
+:root {
+  --kala-black: #211718;
+  --cape-storm: #3c4755;
+  --space-convoy: #637687;
+  --all-systems-red: #b00303;
+  --vintage-charm: #f7f0ec;
+}
+
+html {
+  font-family: "Roboto", system-ui, sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  background-color: var(--kala-black);
+  color: var(--vintage-charm);
+  font-family: "Roboto", system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+p,
+li,
+ul,
+ol,
+table,
+label,
+input,
+textarea,
+select,
+button,
+span,
+div,
+a {
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700;
+}
+
+h4,
+h5,
+h6,
+button,
+nav a,
+label,
+.form-label,
+.btn,
+.menu-item {
+  font-weight: 500;
+}
+
+small,
+figcaption,
+.breadcrumbs,
+.meta,
+.muted,
+.texto-secundario,
+.subtitulo,
+.texto-secundario,
+.pie-foto {
+  font-weight: 300;
+}

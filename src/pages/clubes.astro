@@ -1,0 +1,433 @@
+---
+import Layout from "../layout/Layout.astro";
+import { clubes } from "../data/clubes";
+
+const estilos = [...new Set(clubes.map((club) => club.categoria))].sort((a, b) =>
+    a.localeCompare(b, "es"),
+);
+---
+
+<Layout
+    title="Clubes y páginas automotrices | Car Meeting SV"
+    description="Conoce los clubes y páginas que forman parte de la comunidad automotriz de El Salvador."
+    image="/images/portadas/clubes.webp"
+    keywords="clubes automotrices, páginas automotrices, car clubs El Salvador, cultura automotriz, Car Meeting SV"
+>
+    <section slot="hero" class="encabezado">
+        <nav class="migas" aria-label="Ruta de navegación">
+            <a href="/">Inicio</a>
+            <span aria-hidden="true">&gt;</span>
+            <span aria-current="page">Clubes</span>
+        </nav>
+        <div class="portada">
+            <div class="portada-contenido">
+                <div class="portada-caja">
+                    <h1>Clubes</h1>
+                    <p>Conoce la comunidad automotriz</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="perfiles" aria-label="Clubes y páginas automotrices">
+        <div class="contenedor">
+            <div class="controles">
+                <label class="filtro">
+                    <span class="sr-only">Filtrar por estilo</span>
+                    <select id="filtro">
+                        <option value="">Todos los estilos</option>
+                        {estilos.map((estilo) => <option value={estilo}>{estilo}</option>)}
+                    </select>
+                </label>
+            </div>
+
+            <ul class="lista">
+                {clubes.map((club) => (
+                    <li class="perfil" data-estilo={club.categoria}>
+                        <article class="perfil-enlace">
+                            <a class="imagen-enlace" href={`/clubes/${club.id}`} aria-label={`Ver perfil de ${club.nombre}`}>
+                            <div class="imagen-contenedor">
+                                <img src={club.imagen} alt={`Imagen de ${club.nombre}`} loading="lazy" />
+                                <div class="etiquetas">
+                                    <span class:list={["tipo", { pagina: club.tipo === "Página" }]}>{club.tipo}</span>
+                                    <span class="categoria">{club.categoria}</span>
+                                </div>
+                            </div>
+                            </a>
+                            <div class="info">
+                                <h2>
+                                    <a class="nombre-enlace" href={`/clubes/${club.id}`}>{club.nombre}</a>
+                                </h2>
+                                <p>{club.descripcion}</p>
+                                <a class="mas-info" href={`/clubes/${club.id}`}>
+                                    Ver más información
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M5 12h14" />
+                                        <path d="m13 6 6 6-6 6" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </article>
+                    </li>
+                ))}
+            </ul>
+            <p class="vacio" hidden>No hay perfiles para este estilo.</p>
+            <button class="ver-mas" type="button" hidden>Ver más clubes</button>
+        </div>
+    </section>
+</Layout>
+
+<script>
+    const filtro = document.querySelector<HTMLSelectElement>("#filtro")!;
+    const perfiles = [...document.querySelectorAll<HTMLElement>(".perfil")];
+    const vacio = document.querySelector<HTMLElement>(".vacio")!;
+    const botonVerMas = document.querySelector<HTMLButtonElement>(".ver-mas")!;
+    const POR_PAGINA = 6;
+    let cantidadVisible = POR_PAGINA;
+
+    function render() {
+        const coincidentes = perfiles.filter(
+            (perfil) => !filtro.value || perfil.dataset.estilo === filtro.value,
+        );
+
+        perfiles.forEach((perfil) => {
+            perfil.hidden = true;
+        });
+        coincidentes.slice(0, cantidadVisible).forEach((perfil) => {
+            perfil.hidden = false;
+        });
+
+        vacio.hidden = coincidentes.length > 0;
+        botonVerMas.hidden = coincidentes.length <= cantidadVisible;
+    }
+
+    filtro.addEventListener("change", () => {
+        cantidadVisible = POR_PAGINA;
+        render();
+    });
+
+    botonVerMas.addEventListener("click", () => {
+        cantidadVisible += POR_PAGINA;
+        render();
+    });
+
+    render();
+</script>
+
+<style>
+    .encabezado {
+        padding-top: calc(4rem + 0.75rem);
+    }
+
+    .migas {
+        display: flex;
+        max-width: 72rem;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0 auto;
+        padding: 0 1.5rem 0.75rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+        font-size: 0.9rem;
+    }
+
+    .migas a {
+        color: var(--vintage-charm, #f7f0ec);
+        text-decoration: none;
+    }
+
+    .migas a:hover,
+    .migas a:focus-visible {
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+
+    .portada {
+        min-height: 18rem;
+        display: grid;
+        align-items: center;
+        padding: 2rem 1.5rem;
+        background:
+            linear-gradient(90deg, rgb(33 23 24 / 0.88), rgb(33 23 24 / 0.2)),
+            url("/images/portadas/clubes.webp") center 45% / cover,
+            var(--cape-storm, #3c4755);
+    }
+
+    .portada-contenido {
+        width: min(100%, 72rem);
+        margin: 0 auto;
+    }
+
+    .portada-caja {
+        max-width: 30rem;
+        padding: 1.25rem;
+        border-left: 4px solid var(--all-systems-red, #b00303);
+        background: rgb(33 23 24 / 0.75);
+    }
+
+    .portada h1 {
+        font-size: clamp(2rem, 6vw, 3rem);
+        line-height: 1.05;
+    }
+
+    .portada p {
+        margin-top: 0.25rem;
+        color: var(--vintage-charm-medio, #c5b1a6);
+    }
+
+    .contenedor {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 1.5rem 1.5rem 4rem;
+    }
+
+    .controles {
+        margin-bottom: 1.25rem;
+    }
+
+    .filtro select {
+        width: min(100%, 18rem);
+        min-height: 2.75rem;
+        padding: 0.65rem 2.5rem 0.65rem 0.9rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 5px;
+        background-color: var(--cape-storm, #3c4755);
+        color: var(--vintage-charm, #f7f0ec);
+        color-scheme: dark;
+        cursor: pointer;
+        margin-left: 8px;
+    }
+
+    .lista {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+        list-style: none;
+    }
+
+    .perfil[hidden] {
+        display: none;
+    }
+
+    .perfil-enlace {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid rgb(247 240 236 / 0.18);
+        border-radius: 8px;
+        background: linear-gradient(155deg, #303940, var(--kala-black, #211718) 65%);
+        color: inherit;
+        transition: border-color 0.2s ease;
+    }
+
+    .perfil-enlace:has(a:hover),
+    .perfil-enlace:has(a:focus-visible) {
+        border-color: var(--space-convoy, #637687);
+    }
+
+    .imagen-enlace {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .imagen-contenedor {
+        position: relative;
+        display: grid;
+        overflow: hidden;
+        aspect-ratio: 16 / 10;
+        place-items: center;
+        background: #171314;
+    }
+
+    .imagen-contenedor > img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0.5rem;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .etiquetas {
+        position: absolute;
+        top: 0.75rem;
+        left: 0.75rem;
+        display: flex;
+        max-width: calc(100% - 1.5rem);
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .tipo,
+    .categoria {
+        padding: 0.25rem 0.55rem;
+        border: 1px solid rgb(247 240 236 / 0.45);
+        border-radius: 3px;
+        background: rgb(33 23 24 / 0.88);
+        color: var(--vintage-charm, #f7f0ec);
+        font-size: 0.7rem;
+        font-weight: 600;
+        line-height: 1.25;
+    }
+
+    .tipo {
+        border-color: var(--all-systems-red, #b00303);
+        background: var(--all-systems-red, #b00303);
+        text-transform: uppercase;
+    }
+
+    .tipo.pagina {
+        border-color: var(--space-convoy, #637687);
+        background: var(--cape-storm, #3c4755);
+    }
+
+    .info {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .info h2 {
+        font-size: 1.25rem;
+        line-height: 1.25;
+    }
+
+    .nombre-enlace {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .nombre-enlace:hover,
+    .nombre-enlace:focus-visible {
+        text-decoration: underline;
+        text-decoration-color: var(--all-systems-red, #b00303);
+        text-underline-offset: 0.2em;
+    }
+
+    .info p {
+        display: -webkit-box;
+        min-height: 4.5em;
+        margin-top: 0.5rem;
+        overflow: hidden;
+        color: var(--vintage-charm-medio, #c5b1a6);
+        font-size: 0.9rem;
+        line-height: 1.5;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
+
+    .mas-info {
+        display: flex;
+        width: 100%;
+        min-height: 2.6rem;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-top: 16px;
+        padding: 0.55rem 0.85rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--vintage-charm, #f7f0ec);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .mas-info:hover,
+    .mas-info:focus-visible {
+        border-color: var(--all-systems-red, #b00303);
+        background: var(--all-systems-red, #b00303);
+        color: #fff;
+    }
+
+    .mas-info svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        flex: 0 0 auto;
+        transition: transform 0.2s ease;
+    }
+
+    .mas-info:hover svg,
+    .mas-info:focus-visible svg {
+        transform: translateX(4px);
+    }
+
+    .vacio {
+        padding: 2rem 0;
+        color: var(--vintage-charm-medio, #c5b1a6);
+        text-align: center;
+    }
+
+    .ver-mas {
+        display: block;
+        min-height: 2.5rem;
+        margin: 1.75rem auto 0;
+        padding: 0.55rem 1.25rem;
+        border: 1px solid var(--space-convoy, #637687);
+        border-radius: 4px;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .ver-mas:hover,
+    .ver-mas:focus-visible {
+        border-color: var(--all-systems-red, #b00303);
+        background: var(--all-systems-red, #b00303);
+    }
+
+    .ver-mas[hidden] {
+        display: none;
+    }
+
+    @media (max-width: 760px) {
+        .lista {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+    }
+
+    @media (max-width: 520px) {
+        .migas {
+            padding-inline: 1rem;
+        }
+
+        .portada {
+            min-height: 14rem;
+            padding-inline: 1rem;
+        }
+
+        .contenedor {
+            padding-inline: 1rem;
+        }
+
+        .lista {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 1rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .perfil-enlace,
+        .mas-info,
+        .mas-info svg,
+        .ver-mas {
+            transition: none;
+        }
+    }
+</style>
