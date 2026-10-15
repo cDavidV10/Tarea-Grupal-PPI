@@ -113,6 +113,53 @@ const redes = [
 <script>
     const form = document.querySelector<HTMLFormElement>("#contacto-form")!;
     const estado = document.querySelector<HTMLElement>(".estado")!;
+    const boton = form.querySelector<HTMLButtonElement>(
+        'button[type="submit"]'
+    )!;
+
+    const URL_APPS_SCRIPT =
+  "https://script.google.com/macros/s/AKfycbx0nLzcLx8qwBL5Q3w_wxnJ-HncM5JaXmLvSp1XmkT7hfA72P6groaOXUxkmvuUMrlQLA/exec";
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!form.reportValidity()) return;
+
+        const datos = new FormData(form);
+
+        const respuesta = {
+            nombre: String(datos.get("nombre") || "").trim(),
+            correo: String(datos.get("correo") || "").trim(),
+            motivo: String(datos.get("motivo") || "").trim(),
+            mensaje: String(datos.get("mensaje") || "").trim()
+        };
+
+        boton.disabled = true;
+        estado.textContent = "Enviando mensaje...";
+
+        try {
+            await fetch(URL_APPS_SCRIPT, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(respuesta)
+            });
+
+            estado.textContent =
+                "¡Respuesta registrada!";
+
+            form.reset();
+
+        } catch (error) {
+            console.error("Error al enviar el formulario:", error);
+
+            estado.textContent =
+                "No se pudo enviar el mensaje. Inténtalo nuevamente.";
+        } finally {
+            boton.disabled = false;
+        }
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
