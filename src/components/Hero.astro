@@ -17,6 +17,10 @@
             La escena automotriz, en un solo lugar: eventos, pistas, noticias y
             clubes.
         </p>
+        <div class="acciones">
+            <a class="boton boton-principal" href="/suscribete">Suscribirse</a>
+            <a class="boton boton-secundario" href="/contacto">Contacto</a>
+        </div>
     </article>
 </section>
 
@@ -107,6 +111,51 @@
         margin: 24px 0 32px;
     }
 
+    .acciones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .boton {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 3rem;
+        padding: 0.75rem 1.5rem;
+        border: 2px solid #b00303;
+        border-radius: 0.35rem;
+        color: #f9f7f6;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 180ms ease, border-color 180ms ease,
+            transform 180ms ease;
+    }
+
+    .boton-principal {
+        background-color: #b00303;
+    }
+
+    .boton-principal:hover {
+        background-color: #8f0202;
+        border-color: #8f0202;
+        transform: translateY(-2px);
+    }
+
+    .boton-secundario {
+        background-color: rgb(33 23 24 / 0.35);
+    }
+
+    .boton-secundario:hover {
+        background-color: #b00303;
+        transform: translateY(-2px);
+    }
+
+    .boton:focus-visible {
+        outline: 3px solid #f9f7f6;
+        outline-offset: 3px;
+    }
+
     @media (max-width: 720px) {
         .hero {
             align-items: center;
@@ -140,6 +189,10 @@
             margin-inline: auto;
         }
 
+        .acciones {
+            justify-content: center;
+        }
+
         .sombra {
             background: linear-gradient(
                 to bottom,
@@ -148,6 +201,12 @@
                 rgba(33, 23, 24, 0.6) 65%,
                 rgba(33, 23, 24, 0.85) 100%
             );
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .boton {
+            transition: none;
         }
     }
 </style>
