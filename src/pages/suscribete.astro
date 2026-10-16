@@ -9,12 +9,6 @@ const correoContacto = "carmeetingsv@gmail.com";
     description="Recibe en tu correo las novedades de eventos, clubes y pistas de El Salvador."
     image="/images/hero-image.webp"
 >
-    <nav class="migas" aria-label="Navegación de la página">
-        <a href="/">Inicio</a>
-        <span aria-hidden="true">›</span>
-        <span aria-current="page">Suscríbete</span>
-    </nav>
-
     <section class="suscripcion-hero" aria-labelledby="titulo-suscripcion">
         <div class="hero-contenido">
             <div class="suscripcion-panel">
@@ -100,32 +94,6 @@ const correoContacto = "carmeetingsv@gmail.com";
 </script>
 
 <style>
-    .migas {
-        display: flex;
-        align-items: center;
-        gap: 0.55rem;
-        max-width: 72rem;
-        margin: 0 auto;
-        padding: 1rem 1.5rem;
-        color: rgb(247 240 236 / 0.68);
-        font-size: 0.9rem;
-    }
-
-    .migas a {
-        color: var(--vintage-charm);
-        text-decoration: none;
-    }
-
-    .migas a:hover {
-        color: #fff;
-        text-decoration: underline;
-    }
-
-    .migas span[aria-hidden="true"] {
-        color: var(--all-systems-red);
-        font-size: 1.2rem;
-    }
-
     .suscripcion-hero {
         display: grid;
         min-height: 24rem;
@@ -327,10 +295,6 @@ const correoContacto = "carmeetingsv@gmail.com";
     }
 
     @media (max-width: 480px) {
-        .migas {
-            padding-block: 0.8rem;
-        }
-
         .suscripcion-panel {
             padding: 1.5rem 1.1rem;
         }
