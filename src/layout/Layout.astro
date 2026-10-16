@@ -18,13 +18,15 @@ const pageLabels: Record<string, string> = {
     "/clubes": "Clubes",
     "/contacto": "Contacto",
     "/eventos": "Eventos",
+    "/noticias": "Noticias",
     "/pistas": "Pistas",
     "/suscribete": "Suscríbete",
     "/404": "Página no encontrada",
 };
 const pathSegments = pathname.split("/").filter(Boolean);
 const categoryPath =
-    pathSegments.length > 1 && ["clubes", "eventos"].includes(pathSegments[0])
+    pathSegments.length > 1 &&
+    ["clubes", "eventos", "noticias"].includes(pathSegments[0])
         ? `/${pathSegments[0]}`
         : undefined;
 const categoryLabel = categoryPath ? pageLabels[categoryPath] : undefined;
@@ -40,6 +42,7 @@ const pageImageMap: Record<string, string> = {
     "/": "/images/hero-image.webp",
     "/index": "/images/hero-image.webp",
     "/eventos": "/images/eventos/noche-de-echadas.webp",
+    "/noticias": "/images/portadas/noticia.webp",
     "/clubes": "/images/portadas/clubes.webp",
     "/pistas": "/images/portadas/pista.webp",
     "/about": "/images/portadas/clubes.webp",
