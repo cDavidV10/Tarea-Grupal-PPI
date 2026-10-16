@@ -31,9 +31,11 @@ const redes = [
             </a>
             <span class="copy">© {anio} Car Meeting SV</span>
             <span class="lema">Donde se vive la cultura del motor</span>
+            <a class="suscribete" href="/suscribete">Suscribete</a>
         </article>
 
         <ul class="redes" aria-label="Redes sociales">
+            <a class="contacto" href="/contacto">Contacto</a>
             {redes.map(({ nombre, href }) => (
                 <li>
                     <a
@@ -86,6 +88,20 @@ const redes = [
             height: 2.5rem;
             object-fit: contain;
         }
+    }
+
+    .suscribete, .contacto{
+        color: var(--vintage-charm);
+        text-decoration: none;
+         
+        &:hover{
+            color: var(--vintage-charm);
+            transform: translateY(-2px);
+        }
+    }
+
+    .contacto{
+        margin-right: 16px;
     }
 
     .copy,
