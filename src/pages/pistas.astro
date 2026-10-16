@@ -81,13 +81,6 @@ const pistas: Pista[] = [
     keywords="Singüil, jabalí, zakte, raceway, race, track, pista, miguel, salvador, cuarto, milla, circuito, asfalto, carrera, autodromo, ubicaciones, mapa, cómo, llegar, días, horarios, seguridad, eventos, show, Pista de carreras, Circuito de carreras, Cuarto de milla, Carreras en El Salvador, Se encuentra ubicada en, Eventos deportivos, Deporte motor, Cultura automovilística, Cultura del motor, Cómo llegar a la pista, Donde se encuentra ubicada la pista singüil, Donde se encuentra ubicada la pista El Jablí, Donde se encuentra ubicada la pista Zakte Raceway, Donde se encuentra ubicada la pista San Miguel Racetrack"
 >
     <div slot="hero">
-        <nav class="migas" aria-label="Ruta de navegación">
-            <ol>
-                <li><a href="/">Inicio</a></li>
-                <li aria-current="page">Pistas</li>
-            </ol>
-        </nav>
-
         <section class="portada">
             <div class="portada-contenido">
                 <div class="portada-caja">
@@ -290,37 +283,6 @@ const pistas: Pista[] = [
 </script>
 
 <style>
-    .migas {
-        padding-top: calc(4rem + 1px);
-        border-bottom: 1px solid var(--space-convoy, #637687);
-        background-color: rgb(247 240 236 / 0.04);
-    }
-
-    .migas ol {
-        display: flex;
-        gap: 0.5rem;
-        max-width: 64rem;
-        margin: 0 auto;
-        padding: 0.75rem 1.5rem;
-        font-size: 0.9rem;
-        list-style: none;
-    }
-
-    .migas li + li::before {
-        content: ">";
-        margin-right: 0.5rem;
-        color: var(--vintage-charm-medio, #c5b1a6);
-    }
-
-    .migas a {
-        color: #e0342c;
-        text-decoration: none;
-    }
-
-    .migas a:hover {
-        text-decoration: underline;
-    }
-
     .portada {
         display: flex;
         align-items: center;

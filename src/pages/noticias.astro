@@ -1,0 +1,463 @@
+---
+import Layout from "../layout/Layout.astro";
+import { noticias } from "../data/noticias";
+
+const noticiaDestacada = noticias[0];
+const otrasNoticias = noticias.slice(1);
+const noticiasPorPagina = 6;
+const totalPaginas = Math.ceil(otrasNoticias.length / noticiasPorPagina);
+---
+
+<Layout
+    title="Noticias | Car Meeting SV"
+    description="Las últimas noticias de la comunidad automotriz y el deporte motor en El Salvador."
+    image="/images/portadas/noticia.webp"
+>
+    <section class="noticias-contenido">
+        <header class="encabezado">
+            <p class="sobretitulo">Car Meeting SV</p>
+            <h1>Noticias</h1>
+            <p>Lo último del mundo del motor</p>
+        </header>
+
+        {noticiaDestacada && (
+            <a class="destacada" href={`/noticias/${noticiaDestacada.id}`}>
+                <img src={noticiaDestacada.imagen} alt="" fetchpriority="high" />
+                <div class="destacada-sombra"></div>
+                <div class="destacada-info">
+                    <span class="categoria">{noticiaDestacada.categoria}</span>
+                    <h2>{noticiaDestacada.titulo}</h2>
+                    <p>{noticiaDestacada.metadatos}</p>
+                </div>
+            </a>
+        )}
+
+        <section class="mas-noticias" id="mas-noticias" aria-labelledby="titulo-mas-noticias">
+            <div class="seccion-titulo">
+                <div>
+                    <p class="sobretitulo">Actualidad</p>
+                    <h2 id="titulo-mas-noticias">Más noticias</h2>
+                </div>
+                <span class="contador">{otrasNoticias.length} publicaciones</span>
+            </div>
+
+            <ul class="noticias-grid">
+                {otrasNoticias.map((noticia, indice) => (
+                    <li class="noticia-card" data-indice={indice}>
+                        <a class="imagen-card" href={`/noticias/${noticia.id}`}>
+                            <img
+                                src={noticia.imagen}
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <span class="categoria">{noticia.categoria}</span>
+                        </a>
+                        <div class="card-contenido">
+                            <p class="metadatos">{noticia.metadatos}</p>
+                            <h3>
+                                <a href={`/noticias/${noticia.id}`}>{noticia.titulo}</a>
+                            </h3>
+                            <p class="resumen">{noticia.primerParrafo}</p>
+                            <a class="leer-mas" href={`/noticias/${noticia.id}`}>
+                                Ver más información
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M4 12h15m-6-6 6 6-6 6" />
+                                </svg>
+                            </a>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+
+            {totalPaginas > 1 && (
+                <nav class="paginacion" aria-label="Páginas de noticias">
+                    <button
+                        type="button"
+                        class="pagina-anterior"
+                        aria-label="Página anterior"
+                        disabled
+                    >
+                        ‹
+                    </button>
+                    {Array.from({ length: totalPaginas }, (_, indice) => (
+                        <button
+                            type="button"
+                            class="numero-pagina"
+                            data-pagina={indice + 1}
+                            aria-label={`Página ${indice + 1}`}
+                            aria-current={indice === 0 ? "page" : undefined}
+                        >
+                            {indice + 1}
+                        </button>
+                    ))}
+                    <button
+                        type="button"
+                        class="pagina-siguiente"
+                        aria-label="Página siguiente"
+                    >
+                        ›
+                    </button>
+                </nav>
+            )}
+        </section>
+    </section>
+</Layout>
+
+<script>
+    const tarjetas = [...document.querySelectorAll<HTMLElement>(".noticia-card")];
+    const botonesPagina = [
+        ...document.querySelectorAll<HTMLButtonElement>(".numero-pagina"),
+    ];
+    const botonAnterior = document.querySelector<HTMLButtonElement>(".pagina-anterior");
+    const botonSiguiente = document.querySelector<HTMLButtonElement>(".pagina-siguiente");
+    const porPagina = 6;
+    let paginaActual = 1;
+    const paginasTotales = Math.ceil(tarjetas.length / porPagina);
+
+    function mostrarPagina(pagina: number) {
+        paginaActual = Math.min(Math.max(pagina, 1), paginasTotales);
+        tarjetas.forEach((tarjeta, indice) => {
+            tarjeta.hidden =
+                indice < (paginaActual - 1) * porPagina ||
+                indice >= paginaActual * porPagina;
+        });
+        botonesPagina.forEach((boton) => {
+            if (Number(boton.dataset.pagina) === paginaActual) {
+                boton.setAttribute("aria-current", "page");
+            } else {
+                boton.removeAttribute("aria-current");
+            }
+        });
+        if (botonAnterior) botonAnterior.disabled = paginaActual === 1;
+        if (botonSiguiente) botonSiguiente.disabled = paginaActual === paginasTotales;
+    }
+
+    botonesPagina.forEach((boton) => {
+        boton.addEventListener("click", () => mostrarPagina(Number(boton.dataset.pagina)));
+    });
+    botonAnterior?.addEventListener("click", () => mostrarPagina(paginaActual - 1));
+    botonSiguiente?.addEventListener("click", () => mostrarPagina(paginaActual + 1));
+    mostrarPagina(1);
+</script>
+
+<style>
+    .noticias-contenido {
+        width: min(100% - 3rem, 72rem);
+        margin: 0 auto;
+        padding: 2.75rem 0 4rem;
+    }
+
+    .encabezado {
+        margin-bottom: 1.5rem;
+    }
+
+    .sobretitulo {
+        margin-bottom: 0.35rem;
+        color: #e5aaa5;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .encabezado h1 {
+        font-size: clamp(2.3rem, 5vw, 3.2rem);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+    }
+
+    .encabezado > p:last-child {
+        margin-top: 0.35rem;
+        color: rgb(247 240 236 / 0.7);
+    }
+
+    .destacada {
+        position: relative;
+        display: flex;
+        min-height: clamp(17rem, 40vw, 27rem);
+        align-items: flex-end;
+        overflow: hidden;
+        border: 1px solid rgb(247 240 236 / 0.18);
+        border-radius: 0.6rem;
+        color: var(--vintage-charm);
+        text-decoration: none;
+        isolation: isolate;
+    }
+
+    .destacada > img,
+    .imagen-card img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.35s ease;
+    }
+
+    .destacada:hover > img,
+    .imagen-card:hover img {
+        transform: scale(1.035);
+    }
+
+    .destacada-sombra {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        background: linear-gradient(90deg, rgb(20 15 16 / 0.78), transparent 90%),
+            linear-gradient(0deg, rgb(20 15 16 / 0.88), transparent 75%);
+    }
+
+    .destacada-info {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 47rem);
+        padding: clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    .categoria {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        padding: 0.32rem 0.65rem;
+        border: 1px solid rgb(247 240 236 / 0.32);
+        border-radius: 999px;
+        background: rgb(33 23 24 / 0.74);
+        color: var(--vintage-charm);
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .destacada h2 {
+        margin-top: 0.7rem;
+        font-size: clamp(1.55rem, 3.4vw, 2.4rem);
+        line-height: 1.12;
+        letter-spacing: -0.025em;
+    }
+
+    .destacada-info > p {
+        margin-top: 0.4rem;
+        color: rgb(247 240 236 / 0.76);
+        font-size: 0.9rem;
+    }
+
+    .mas-noticias {
+        padding-top: 2.75rem;
+    }
+
+    .seccion-titulo {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .seccion-titulo .sobretitulo {
+        margin-bottom: 0.15rem;
+    }
+
+    .seccion-titulo h2 {
+        font-size: clamp(1.7rem, 4vw, 2.2rem);
+        letter-spacing: -0.03em;
+    }
+
+    .contador {
+        padding-bottom: 0.35rem;
+        color: rgb(247 240 236 / 0.6);
+        font-size: 0.85rem;
+    }
+
+    .noticias-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.25rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .noticia-card {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid rgb(247 240 236 / 0.16);
+        border-radius: 0.5rem;
+        background: linear-gradient(145deg, rgb(60 71 85 / 0.45), rgb(33 23 24 / 0.8));
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .noticia-card:hover {
+        transform: translateY(-3px);
+        border-color: rgb(224 52 44 / 0.62);
+    }
+
+    .noticia-card[hidden] {
+        display: none;
+    }
+
+    .imagen-card {
+        position: relative;
+        display: block;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        background: var(--cape-storm);
+    }
+
+    .imagen-card .categoria {
+        position: absolute;
+        bottom: 0.7rem;
+        left: 0.7rem;
+        max-width: calc(100% - 1.4rem);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .card-contenido {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        padding: 1rem 1rem 1.1rem;
+    }
+
+    .metadatos {
+        color: rgb(247 240 236 / 0.58);
+        font-size: 0.78rem;
+    }
+
+    .card-contenido h3 {
+        margin-top: 0.45rem;
+        font-size: 1.12rem;
+        line-height: 1.3;
+    }
+
+    .card-contenido h3 a {
+        color: var(--vintage-charm);
+        text-decoration: none;
+    }
+
+    .card-contenido h3 a:hover {
+        color: #e5aaa5;
+    }
+
+    .resumen {
+        display: -webkit-box;
+        margin-top: 0.55rem;
+        overflow: hidden;
+        color: rgb(247 240 236 / 0.72);
+        font-size: 0.9rem;
+        line-height: 1.55;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
+
+    .leer-mas {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: auto;
+        padding-top: 1rem;
+        color: #e5aaa5;
+        font-size: 0.88rem;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .leer-mas:hover {
+        color: #fff;
+    }
+
+    .leer-mas svg {
+        width: 1.4rem;
+        height: 1.4rem;
+        flex-shrink: 0;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.7;
+        transition: transform 0.2s ease;
+    }
+
+    .leer-mas:hover svg {
+        transform: translateX(3px);
+    }
+
+    .paginacion {
+        display: flex;
+        justify-content: center;
+        gap: 0.45rem;
+        margin-top: 1.75rem;
+    }
+
+    .paginacion button {
+        display: grid;
+        width: 2.25rem;
+        height: 2.25rem;
+        place-items: center;
+        border: 1px solid rgb(247 240 236 / 0.34);
+        border-radius: 50%;
+        background: transparent;
+        color: var(--vintage-charm);
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .paginacion button:hover:not(:disabled),
+    .paginacion button[aria-current="page"] {
+        border-color: var(--all-systems-red);
+        background: var(--all-systems-red);
+    }
+
+    .paginacion button:disabled {
+        opacity: 0.38;
+        cursor: default;
+    }
+
+    .paginacion button:focus-visible,
+    .leer-mas:focus-visible,
+    .destacada:focus-visible,
+    .card-contenido h3 a:focus-visible {
+        outline: 2px solid #e5aaa5;
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 760px) {
+        .noticias-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+    }
+
+    @media (max-width: 540px) {
+        .noticias-contenido {
+            width: min(100% - 2rem, 72rem);
+            padding-top: 2rem;
+        }
+
+        .noticias-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .seccion-titulo {
+            align-items: start;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .destacada {
+            min-height: 19rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .destacada > img,
+        .imagen-card img,
+        .noticia-card,
+        .leer-mas svg {
+            transition: none;
+        }
+    }
+</style>

@@ -1,0 +1,201 @@
+---
+import Layout from "../../layout/Layout.astro";
+import { noticias } from "../../data/noticias";
+
+export function getStaticPaths() {
+    return noticias.map((noticia) => ({
+        params: { id: noticia.id },
+        props: { noticia },
+    }));
+}
+
+const { noticia } = Astro.props;
+---
+
+<Layout
+    title={`${noticia.titulo} | Car Meeting SV`}
+    description={noticia.primerParrafo}
+    image={noticia.imagen}
+    keywords={`${noticia.categoria}, noticias automotrices, deporte motor, El Salvador, Car Meeting SV`}
+>
+    <article class="detalle-noticia">
+        <a
+            class="volver"
+            href="/noticias"
+            aria-label="Volver a todas las noticias"
+            title="Volver a noticias"
+        >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M19 12H5m6 7-7-7 7-7" />
+            </svg>
+        </a>
+        <img class="portada-noticia" src={noticia.imagen} alt="" fetchpriority="high" />
+
+        <div class="articulo-contenido">
+            <span class="categoria">{noticia.categoria}</span>
+            <h1>{noticia.titulo}</h1>
+            <p class="metadatos">{noticia.metadatos}</p>
+            <div class="texto-noticia">
+                <p>{noticia.primerParrafo}</p>
+                <p>{noticia.segundoParrafo}</p>
+            </div>
+            <a
+                class="fuente"
+                href={noticia.url}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Más información
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M14 4h6v6m-11 5L20 4M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" />
+                </svg>
+            </a>
+        </div>
+    </article>
+</Layout>
+
+<style>
+    .detalle-noticia {
+        position: relative;
+        width: min(100% - 3rem, 68rem);
+        margin: 2.25rem auto 4rem;
+        overflow: hidden;
+        border: 1px solid rgb(247 240 236 / 0.16);
+        border-radius: 0.6rem;
+        background: rgb(247 240 236 / 0.07);
+    }
+
+    .portada-noticia {
+        display: block;
+        width: 100%;
+        max-height: 33rem;
+        aspect-ratio: 2.55 / 1;
+        object-fit: cover;
+        background: var(--cape-storm);
+    }
+
+    .volver {
+        position: absolute;
+        z-index: 1;
+        top: 1rem;
+        left: 1rem;
+        display: grid;
+        width: 2.75rem;
+        height: 2.75rem;
+        place-items: center;
+        border: 1px solid rgb(247 240 236 / 0.45);
+        border-radius: 50%;
+        background: rgb(33 23 24 / 0.76);
+        color: white;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .volver:hover {
+        transform: translateX(-2px);
+        background: var(--all-systems-red);
+    }
+
+    .volver svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.8;
+    }
+
+    .articulo-contenido {
+        padding: clamp(1.25rem, 4vw, 2.5rem);
+    }
+
+    .categoria {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        border: 1px solid rgb(224 52 44 / 0.55);
+        border-radius: 999px;
+        background: rgb(176 3 3 / 0.16);
+        color: #f0b5b0;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    h1 {
+        margin-top: 0.85rem;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        line-height: 1.12;
+        letter-spacing: -0.035em;
+    }
+
+    .metadatos {
+        margin-top: 0.7rem;
+        color: rgb(247 240 236 / 0.65);
+        font-size: 0.9rem;
+    }
+
+    .texto-noticia {
+        display: grid;
+        gap: 1rem;
+        max-width: 70ch;
+        margin-top: 1.5rem;
+        color: rgb(247 240 236 / 0.86);
+        font-size: 1.05rem;
+        line-height: 1.75;
+    }
+
+    .fuente {
+        display: flex;
+        width: fit-content;
+        min-width: 12rem;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        margin: 1.75rem auto 0;
+        padding: 0.75rem 1.4rem;
+        border: 1px solid var(--all-systems-red);
+        border-radius: 0.35rem;
+        background: var(--all-systems-red);
+        color: white;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .fuente:hover {
+        transform: translateY(-2px);
+        background: #8d0202;
+    }
+
+    .fuente svg {
+        width: 1.1rem;
+        height: 1.1rem;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.7;
+    }
+
+    .volver:focus-visible,
+    .fuente:focus-visible {
+        outline: 2px solid #e5aaa5;
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 540px) {
+        .detalle-noticia {
+            width: min(100% - 2rem, 68rem);
+            margin-block: 1.25rem 3rem;
+        }
+
+        .portada-noticia {
+            min-height: 13rem;
+            aspect-ratio: 1.5 / 1;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .volver,
+        .fuente {
+            transition: none;
+        }
+    }
+</style>

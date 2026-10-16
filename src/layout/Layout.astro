@@ -12,6 +12,29 @@ interface Props {
 
 const { title, description, image, keywords } = Astro.props;
 const tituloPagina = title.endsWith(" - PPI") ? title : `${title} - PPI115 - 2026`;
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const pageLabels: Record<string, string> = {
+    "/about": "Sobre nosotros",
+    "/clubes": "Clubes",
+    "/contacto": "Contacto",
+    "/eventos": "Eventos",
+    "/noticias": "Noticias",
+    "/pistas": "Pistas",
+    "/suscribete": "Suscríbete",
+    "/404": "Página no encontrada",
+};
+const pathSegments = pathname.split("/").filter(Boolean);
+const categoryPath =
+    pathSegments.length > 1 &&
+    ["clubes", "eventos", "noticias"].includes(pathSegments[0])
+        ? `/${pathSegments[0]}`
+        : undefined;
+const categoryLabel = categoryPath ? pageLabels[categoryPath] : undefined;
+const currentPageLabel =
+    pageLabels[pathname] ??
+    title.split("|")[0].trim() ??
+    pathSegments.at(-1)?.replace(/-/g, " ") ??
+    "Página";
 const defaultKeywords =
     "Car Meeting SV, eventos de autos, comunidad automotriz, tuning, carros El Salvador, clubes automotrices, reuniones de autos, cultura automotriz, pistas, autos clásicos, autos deportivos";
 
@@ -19,6 +42,7 @@ const pageImageMap: Record<string, string> = {
     "/": "/images/hero-image.webp",
     "/index": "/images/hero-image.webp",
     "/eventos": "/images/eventos/noche-de-echadas.webp",
+    "/noticias": "/images/portadas/noticia.webp",
     "/clubes": "/images/portadas/clubes.webp",
     "/pistas": "/images/portadas/pista.webp",
     "/about": "/images/portadas/clubes.webp",
@@ -37,6 +61,15 @@ const tieneHero = Astro.slots.has("hero");
 <!doctype html>
 <html lang="es">
     <head>
+       <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-4LEHJ58669"></script>
+        <script is:inline>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-4LEHJ58669');
+        </script>
         <meta charset="utf-8" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="48x48" href="/images/logo-48x48.png" />
@@ -85,6 +118,17 @@ const tieneHero = Astro.slots.has("hero");
     <body>
         <Navbar />
         <main class:list={["principal", { "sin-hero": !tieneHero }]}>
+            {pathname !== "/" && pathname !== "/index" && (
+                <nav class="migas" aria-label="Ruta de navegación">
+                    <ol>
+                        <li><a href="/">Inicio</a></li>
+                        {categoryPath && categoryLabel && (
+                            <li><a href={categoryPath}>{categoryLabel}</a></li>
+                        )}
+                        <li aria-current="page">{currentPageLabel}</li>
+                    </ol>
+                </nav>
+            )}
             <slot name="hero" />
             <slot />
         </main>
@@ -98,6 +142,48 @@ const tieneHero = Astro.slots.has("hero");
     }
 
     .principal.sin-hero {
+        padding-top: 0;
+    }
+
+    .migas {
         padding-top: calc(4rem + 1px);
+        border-bottom: 1px solid rgb(99 118 135 / 0.55);
+        background-color: rgb(247 240 236 / 0.035);
+    }
+
+    .migas ol {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.55rem;
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 0.7rem 1.5rem;
+        color: rgb(247 240 236 / 0.7);
+        font-size: 0.9rem;
+        list-style: none;
+    }
+
+    .migas li + li::before {
+        margin-right: 0.55rem;
+        color: var(--all-systems-red, #b00303);
+        content: "›";
+    }
+
+    .migas a {
+        color: var(--vintage-charm, #f7f0ec);
+        text-decoration: none;
+    }
+
+    .migas a:hover,
+    .migas a:focus-visible {
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+    }
+
+    @media (max-width: 520px) {
+        .migas ol {
+            padding-inline: 1rem;
+        }
     }
 </style>
