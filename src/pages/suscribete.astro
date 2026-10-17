@@ -35,7 +35,7 @@ const correoContacto = "carmeetingsv@gmail.com";
                         required
                     />
                     <button type="submit">Suscribirme</button>
-                </form>
+                </form>     
                 <p class="nota">
                      La función de suscripción todavía esta en fase de desarrollo, puedes probar una version gratuita.
                 </p>
@@ -68,30 +68,54 @@ const correoContacto = "carmeetingsv@gmail.com";
     </section>
 </Layout>
 
+
 <script>
     const form = document.querySelector<HTMLFormElement>("#form-suscripcion");
     const emailInput = document.querySelector<HTMLInputElement>("#correo-suscripcion");
     const estado = document.querySelector<HTMLElement>("#estado-suscripcion");
+    const boton = form?.querySelector<HTMLButtonElement>('button[type="submit"]');
 
-    if (form && emailInput && estado) form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        if (!form.reportValidity()) return;
+    const APPS_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbzxL7RUNSW4Qn-r-9te2dVQQ2xQwJkcWxKybSGNkvpCwMcN6CwVbhQrqFzwiPRkMeig/exec";
 
-        const correoContacto = form.dataset.correoContacto;
-        if (!correoContacto) {
-            estado.textContent = "No fue posible preparar la solicitud. Inténtalo más tarde.";
-            return;
-        }
-        const subject = encodeURIComponent("Quiero suscribirme a Car Meeting SV");
-        const body = encodeURIComponent(
-            `Quiero recibir novedades de Car Meeting SV en este correo: ${emailInput.value.trim()}`
-        );
+    if (form && emailInput && estado && boton) {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
 
-        estado.textContent =
-            "Se abrirá tu aplicación de correo para completar la solicitud.";
-        window.location.href = `mailto:${correoContacto}?subject=${subject}&body=${body}`;
-    });
+            if (!form.reportValidity()) return;
+
+            const correo = emailInput.value.trim().toLowerCase();
+
+            estado.textContent = "Registrando tu suscripción...";
+            boton.disabled = true;
+
+            try {
+                const datos = new URLSearchParams();
+                datos.set("action", "subscribe");
+                datos.set("email", correo);
+
+                await fetch(APPS_SCRIPT_URL, {
+                    method: "POST",
+                    body: datos,
+                    mode: "no-cors"
+                });
+
+                estado.textContent =
+                    "¡Tu solicitud ha sido recibida!";
+
+                form.reset();
+            } catch (error) {
+                console.error("Error de suscripción:", error);
+
+                estado.textContent =
+                    "No se pudo enviar la solicitud. Inténtalo de nuevo.";
+            } finally {
+                boton.disabled = false;
+            }
+        });
+    }
 </script>
+
 
 <style>
     .suscripcion-hero {
