@@ -210,6 +210,17 @@ export const eventos: Evento[] = [
     url: "https://diarioelsalvador.com/dedeportes/el-karting-quemo-neumaticos-en-la-pista-el-jabali/853767",
     descripcionArchivo: "cadet-house",
   },
+  {
+    fecha: "2026-12-05",
+    tipo: "Karting",
+    nombre: "3 Horas de El Jabalí",
+    img: "3-horas-kart.webp",
+    lugar: "Autódromo Internacional El Jabalí, La Libertad",
+    hora: "4:00 p. m.",
+    precio: 0,
+    url: "https://www.facebook.com/AutodromoElJabali",
+    descripcionArchivo: "3-horas-kart",
+  },
 ];
 
 export const slugEvento = (nombre: string) =>
