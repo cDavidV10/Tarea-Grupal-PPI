@@ -56,6 +56,79 @@ const canonicalURL = Astro.site
 const pageURL = canonicalURL ?? Astro.url;
 const imagenURL = resolvedImage ? new URL(resolvedImage, Astro.url) : undefined;
 const tieneHero = Astro.slots.has("hero");
+const siteURL = new URL("/", Astro.site ?? Astro.url);
+const organizationId = `${siteURL}#organization`;
+const websiteId = `${siteURL}#website`;
+const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "Organization",
+            "@id": organizationId,
+            name: "Car Meeting SV",
+            url: siteURL,
+            logo: {
+                "@type": "ImageObject",
+                url: new URL("/images/Logo.webp", siteURL),
+            },
+        },
+        {
+            "@type": "WebSite",
+            "@id": websiteId,
+            url: siteURL,
+            name: "Car Meeting SV",
+            inLanguage: "es-SV",
+            publisher: { "@id": organizationId },
+        },
+        {
+            "@type": "WebPage",
+            "@id": `${pageURL}#webpage`,
+            url: pageURL,
+            name: tituloPagina,
+            description,
+            inLanguage: "es-SV",
+            isPartOf: { "@id": websiteId },
+            publisher: { "@id": organizationId },
+            ...(imagenURL && {
+                primaryImageOfPage: {
+                    "@type": "ImageObject",
+                    url: imagenURL,
+                },
+            }),
+        },
+        ...(pathname !== "/" && pathname !== "/index"
+            ? [
+                  {
+                      "@type": "BreadcrumbList",
+                      itemListElement: [
+                          {
+                              "@type": "ListItem",
+                              position: 1,
+                              name: "Inicio",
+                              item: siteURL,
+                          },
+                          ...(categoryPath && categoryLabel
+                              ? [
+                                    {
+                                        "@type": "ListItem",
+                                        position: 2,
+                                        name: categoryLabel,
+                                        item: new URL(categoryPath, siteURL),
+                                    },
+                                ]
+                              : []),
+                          {
+                              "@type": "ListItem",
+                              position: categoryPath ? 3 : 2,
+                              name: currentPageLabel,
+                              item: pageURL,
+                          },
+                      ],
+                  },
+              ]
+            : []),
+    ],
+};
 ---
 
 <!doctype html>
@@ -114,6 +187,10 @@ const tieneHero = Astro.slots.has("hero");
         <meta name="twitter:title" content={tituloPagina} />
         <meta name="twitter:description" content={description} />
         {imagenURL && <meta name="twitter:image" content={imagenURL} />}
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")}
+        ></script>
     </head>
     <body>
         <Navbar />
