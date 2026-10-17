@@ -6,7 +6,7 @@
         class="escena foto"
         alt=""
         fetchpriority="high"
-        src="/images/nose.webp"
+        src="/images/hero-image.webp"
     />
     <article class="tinte"></article>
     <article class="sombra"></article>
@@ -132,7 +132,27 @@
             transform 180ms ease;
     }
 
-   
+    .boton-principal {
+        background-color: var(--all-systems-red);
+    }
+
+    .boton-principal:hover {
+        transform: translateY(-2px);
+    }
+
+    .boton-secundario {
+        border-color: var(--cape-storm);
+        background-color: var(--cape-storm);
+    }
+
+    .boton-secundario:hover {
+        transform: translateY(-2px);
+    }
+
+    .boton:focus-visible {
+        outline: 3px solid #f9f7f6;
+        outline-offset: 3px;
+    }
 
     @media (max-width: 720px) {
         .hero {
