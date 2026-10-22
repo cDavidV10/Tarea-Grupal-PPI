@@ -147,6 +147,7 @@ export const eventos: Evento[] = [
     descripcionArchivo: "classic-garage",
   },
   {
+    fecha: "2026-10-31",
     tipo: "Truck Show",
     nombre: "Inox for Trucks, 10 años de aniversario",
     img: "inox-for-trucks-10-aniversario.webp",
@@ -226,7 +227,7 @@ export const eventos: Evento[] = [
     fecha: "2026-11-01",
     tipo: "Car Meet",
     nombre: "Rodada a Santo Tomás",
-    img: "rodada-a-santo-tomas.webp",
+    img: "rodada-santo-tomas.webp",
     lugar: "Santo Tomás, San Salvador",
     hora: "Por confirmar",
     precio: 0,
