@@ -165,7 +165,7 @@ export const eventos: Evento[] = [
     lugar: "Pista Singüil, Santa Ana",
     hora: "Por confirmar",
     precio: 0,
-    url: "",
+    url: "https://www.facebook.com/profile.php?id=100095511546508",
     descripcionArchivo: "nissanfestival",
   },
   {
@@ -231,7 +231,7 @@ export const eventos: Evento[] = [
     lugar: "Santo Tomás, San Salvador",
     hora: "Por confirmar",
     precio: 0,
-    url: "",
+    url: "https://www.tiktok.com/@datsun_mafia.sv/photo/7698574123634658580?q=car%20meet%20el%20salvador&t=1792633734229",
     descripcionArchivo: "rodada-santo-tomas",
   },
 ];
