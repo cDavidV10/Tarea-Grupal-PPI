@@ -16,8 +16,8 @@ export interface Evento {
 
 export const eventos: Evento[] = [
   {
-    frecuencia: "Todos los viernes",
-    dia: "VIE",
+    frecuencia: "Todos los sabados",
+    dia: "SAB",
     horaCorta: "7 P. M.",
     tipo: "Noche de echadas",
     nombre: "Noche de echadas",
@@ -147,6 +147,7 @@ export const eventos: Evento[] = [
     descripcionArchivo: "classic-garage",
   },
   {
+    fecha: "2026-10-31",
     tipo: "Truck Show",
     nombre: "Inox for Trucks, 10 años de aniversario",
     img: "inox-for-trucks-10-aniversario.webp",
@@ -157,13 +158,14 @@ export const eventos: Evento[] = [
     descripcionArchivo: "inixfortuck",
   },
   {
+    fecha: "2026-11-29",
     tipo: "Car Show",
-    nombre: "Nissan Fest",
+    nombre: "Nissan Fest 6",
     img: "nissan-fest.webp",
     lugar: "Pista Singüil, Santa Ana",
-    hora: null,
-    precio: null,
-    url: "https://www.facebook.com/pistasinguilelsalvador/posts/pfbid02yS7VEU6iys2NTaMQazGPRvr3RwcYNJ5zyZ8G55tU9Jz5caRbNW1MrGW2ARd9nh8Ul",
+    hora: "Por confirmar",
+    precio: 0,
+    url: "https://www.facebook.com/profile.php?id=100095511546508",
     descripcionArchivo: "nissanfestival",
   },
   {
@@ -220,6 +222,17 @@ export const eventos: Evento[] = [
     precio: 0,
     url: "https://www.facebook.com/AutodromoElJabali",
     descripcionArchivo: "3-horas-kart",
+  },
+  {
+    fecha: "2026-11-01",
+    tipo: "Car Meet",
+    nombre: "Rodada a Santo Tomás",
+    img: "rodada-santo-tomas.webp",
+    lugar: "Santo Tomás, San Salvador",
+    hora: "Por confirmar",
+    precio: 0,
+    url: "https://www.tiktok.com/@datsun_mafia.sv/photo/7698574123634658580?q=car%20meet%20el%20salvador&t=1792633734229",
+    descripcionArchivo: "rodada-santo-tomas",
   },
 ];
 
